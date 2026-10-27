@@ -1,9 +1,27 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { getLatestKp } from '../api/noaa';
+import { KpData } from '../types';
 
 export default function ForecastsScreen() {
+
+  const [kp, setKp] = useState<KpData | null>(null);
+
+  useEffect(() => {
+    getLatestKp()
+      .then(setKp)
+      .catch(error => console.error('Error fetching Kp data:', error));
+  }, []);
+
+  console.log('Latest Kp data:', kp);
+
   return (
     <View style={styles.container}>
-      <Text>Manage your privacy settings here.</Text>
+      {kp ? (
+        <Text>Kp: {kp.estimated_kp}</Text>
+      ) : (
+        <Text>Loading Kp data...</Text>
+      )}
     </View>
   );
 }
@@ -11,7 +29,6 @@ export default function ForecastsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    fontSize: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',

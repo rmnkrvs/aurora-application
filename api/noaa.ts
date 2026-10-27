@@ -1,24 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { useState, useEffect } from 'react';
 import { KpData } from '../types';
 
-export default function noaa() {
+const BASE_URL = 'https://services.swpc.noaa.gov';
 
-    const [ kp, setKp ] = useState<KpData | null>(null);
-    const [ loading, setLoading ] = useState(false);
-
-    const getLatestKp = () => {
-    setLoading(true);
-    fetch(`https://services.swpc.noaa.gov/json/planetary_k_index_1m.json`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error fetching data: ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(data => setKp_index(data[0].kp))
-      .catch(error => console.error(error))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => { handleFetch(); }, []);
+export async function getLatestKp(): Promise<KpData> {
+    const response = await fetch(`${BASE_URL}/json/planetary_k_index_1m.json`);
+    if (!response.ok) {
+        throw new Error('Error fetching data: ' + response.statusText);
+    }
+    const data: KpData[] = await response.json();
+    return data[data.length - 1];
+}
