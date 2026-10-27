@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { getLatestKp } from '../api/noaa';
 import { KpData } from '../types';
+import describeKp from '../utils/kp';
 
 export default function ForecastsScreen() {
 
@@ -22,6 +23,8 @@ export default function ForecastsScreen() {
       ) : (
         <Text>Loading Kp data...</Text>
       )}
+
+      <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
     </View>
   );
 }
