@@ -1,8 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ForecastsScreen from './ForecastsScreen';
-import SightingsScreen from './SightingsScreen';
-import PlacesScreen from './PlacesScreen';
-import InsightsScreen from './InsightsScreen';
+import ForecastsScreen from './screens/ForecastsScreen';
+import SightingsScreen from './screens/SightingsScreen';
+import PlacesScreen from './screens/PlacesScreen';
+import InsightsScreen from './screens/InsightsScreen';
 import { TabParamList } from './types';
 import { Ionicons } from '@expo/vector-icons';
 

@@ -14,6 +14,12 @@ export type RootStackParamList = {
     Tabs: undefined;
 };
 
+export type KpData = {
+    time_tag: string;
+    kp_index: number;
+    estimated_kp: number;
+};
+
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
     NativeStackScreenProps<RootStackParamList, T>;
 

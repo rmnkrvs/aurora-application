@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import WelcomeScreen from './WelcomeScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
 import Tabs from './Tabs';
 import { RootStackParamList } from './types';
 

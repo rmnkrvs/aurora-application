@@ -1,5 +1,5 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { RootStackScreenProps } from './types';
+import { RootStackScreenProps } from '../types';
 
 export default function WelcomeScreen({navigation}: RootStackScreenProps<'Welcome'>) {
   return (
