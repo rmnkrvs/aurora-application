@@ -4,12 +4,15 @@ import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
+import { useLocation } from '../hooks/location';
 
 export default function ForecastsScreen() {
 
   const [kp, setKp] = useState<KpData | null>(null);
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
   const [weather, setWeather] = useState<Weather | null>(null)
+
+  const location = useLocation();
 
   useEffect(() => {
     getLatestKp()
@@ -24,13 +27,11 @@ export default function ForecastsScreen() {
   }, []);
 
   useEffect(() => {
-    getWeather(66.5, 25.7)
+    if (!location) return;
+    getWeather(location.latitude, location.longitude)
       .then(setWeather)
       .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
-//console.log('ForecastsScreen rendered with Kp data:', kp);
-//console.log('ForecastsScreen rendered with Kp forecast data:', kpForecast);
+  }, [location]);
 
   return (
     <View style={styles.container}>

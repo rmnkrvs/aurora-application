@@ -40,6 +40,11 @@ export type Weather = {
     };
 };
 
+export type Coordinates = { 
+    latitude: number; 
+    longitude: number 
+};
+
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
     NativeStackScreenProps<RootStackParamList, T>;
 
