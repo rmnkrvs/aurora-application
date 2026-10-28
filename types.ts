@@ -20,6 +20,26 @@ export type KpData = {
     estimated_kp: number;
 };
 
+export type KpForecast = {
+    time_tag: string;
+    kp: number;
+    observed: string;
+};
+
+export type Weather = {
+    hourly: {
+        time: string[];
+        cloud_cover: number[];
+        visibility: number[];
+    };
+    daily: {
+        time: string[];
+        sunrise: string[];
+        sunset: string[];
+        moon_phase: number[];
+    };
+};
+
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
     NativeStackScreenProps<RootStackParamList, T>;
 
