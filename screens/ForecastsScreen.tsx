@@ -37,7 +37,7 @@ export default function ForecastsScreen() {
     <View style={styles.container}>
       
       {kp ? (
-        <Text>Kp: {kp.estimated_kp}</Text>
+        <Text>Testing KP: {kp.estimated_kp}</Text>
       ) : (
         <Text>Loading data...</Text>
       )}
@@ -45,13 +45,13 @@ export default function ForecastsScreen() {
       <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
 
       {kpForecast ? (
-        <Text>Kp Forecast: {kpForecast[0]?.kp}</Text>
+        <Text>Testing KP Forecast: {kpForecast[0]?.kp}</Text>
       ) : (
         <Text>Loading data...</Text>
       )}
 
       {weather ? (
-        <Text>Sunset: {weather.daily.sunset[0]}</Text>
+        <Text>Testing weather data / Sunset: {weather.daily.sunset[0]}</Text>
       ) : (
         <Text>Loading data...</Text>
       )}
