@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import Tabs from './Tabs';
+import AddSightingScreen from './screens/AddSightingScreen';
 import { RootStackParamList } from './types';
 
 import { db, initializeDatabase } from './db/sightings';
@@ -23,6 +24,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="AddSighting" component={AddSightingScreen} options={{ headerShown: true, title: 'New Sighting' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

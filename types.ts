@@ -11,6 +11,7 @@ export type TabParamList = {
 export type RootStackParamList = {
     Welcome: undefined;
     Tabs: undefined;
+    AddSighting: undefined;
 };
 
 export type KpData = {

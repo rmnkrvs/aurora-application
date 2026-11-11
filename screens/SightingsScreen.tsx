@@ -1,9 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import { RootStackScreenProps } from '../types';
 
-export default function SightingsScreen() {
+export default function SightingsScreen({navigation}: RootStackScreenProps<'AddSighting'>) {
   return (
     <View style={styles.container}>
-      <Text>Manage your privacy settings here.</Text>
+      <Button 
+      onPress={() => navigation.navigate('AddSighting')} title="Add Sighting" />
+      
     </View>
   );
 }
