@@ -5,13 +5,7 @@ import { RootStackScreenProps } from '../types';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native';
 import { File, Paths } from 'expo-file-system';
-
-const RATINGS = [
-    { value: 0, label: 'None' },
-    { value: 1, label: 'Weak' },
-    { value: 2, label: 'Clear' },
-    { value: 3, label: 'Strong' },
-];
+import { RATINGS } from '../utils/ratings';
 
 export default function AddSightingScreen({ navigation }: RootStackScreenProps<'AddSighting'>) {
 
