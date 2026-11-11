@@ -4,6 +4,7 @@ import { saveSighting } from '../db/sightings';
 import { RootStackScreenProps } from '../types';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native';
+import { File, Paths } from 'expo-file-system';
 
 const RATINGS = [
     { value: 0, label: 'None' },
@@ -25,7 +26,12 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
         });
 
         if (!result.canceled) {
-            setPhotoUri(result.assets[0].uri);
+            try {
+                const permanentUri = await copyToDocuments(result.assets[0].uri);
+                setPhotoUri(permanentUri);
+            } catch (error) {
+                console.error('Could not copy photo:', error);
+            }
         }
     };
 
@@ -35,8 +41,20 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
 
         const result = await ImagePicker.launchCameraAsync({ quality: 0.7 });
         if (!result.canceled) {
-            setPhotoUri(result.assets[0].uri);
+            try {
+                const permanentUri = await copyToDocuments(result.assets[0].uri);
+                setPhotoUri(permanentUri);
+            } catch (error) {
+                console.error('Could not copy photo:', error);
+            }
         }
+    };
+
+    const copyToDocuments = async (uri: string) => {
+        const source = new File(uri);
+        const target = new File(Paths.document, `sighting-${Date.now()}.jpg`);
+        await source.copy(target);
+        return target.uri;
     };
 
     const handleSave = async () => {
@@ -45,9 +63,9 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
                 timestamp: new Date().toISOString(),
                 latitude: 0,
                 longitude: 0,
-                rating: 0,
+                rating,
                 note: note,
-                photoUri: '',
+                photoUri,
                 kpIndex: 0,
                 cloudCover: 0,
                 moonPhase: 0
@@ -83,12 +101,10 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
             />
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Button title="Take a photo" onPress={takePhoto} />
-            {photoUri && <Image source={{ uri: photoUri }} style={{ width: 200, height: 200 }} />}
-
-            <Button title="Choose from gallery" onPress={pickImage} />
-            {photoUri && <Image source={{ uri: photoUri }} style={{ width: 200, height: 200 }} />}
+                <Button title="Take a photo" onPress={takePhoto} />
+                <Button title="Choose from gallery" onPress={pickImage} />
             </View>
+            {photoUri && <Image source={{ uri: photoUri }} style={{ width: 200, height: 200 }} />}
 
             <Button
                 title='Save'
