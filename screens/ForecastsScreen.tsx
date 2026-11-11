@@ -45,7 +45,7 @@ export default function ForecastsScreen() {
       <Text>{describeKp(kp?.estimatedKp || 0)}</Text>
 
       {kpForecast ? (
-        <Text>Testing KP Forecast: {kpForecast[0]?.kpIndex}</Text>
+        <Text>Testing KP Forecast: {kpForecast[0]?.kpForecast}</Text>
       ) : (
         <Text>Loading data...</Text>
       )}

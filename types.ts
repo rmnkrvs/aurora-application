@@ -1,6 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import type { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 
 export type TabParamList = {
     Forecasts: undefined;
@@ -22,7 +21,7 @@ export type KpData = {
 
 export type KpForecast = {
     timeTag: string;
-    kpIndex: number;
+    kpForecast: number;
     observed: string;
 };
 
@@ -46,7 +45,7 @@ export type Coordinates = {
 };
 
 export type Sighting = {
-    id: string;
+    id: number;
     timestamp: string;
     latitude: number;
     longitude: number;
