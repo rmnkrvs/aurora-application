@@ -37,15 +37,15 @@ export default function ForecastsScreen() {
     <View style={styles.container}>
       
       {kp ? (
-        <Text>Testing KP: {kp.estimated_kp}</Text>
+        <Text>Testing KP: {kp.estimatedKp}</Text>
       ) : (
         <Text>Loading data...</Text>
       )}
 
-      <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
+      <Text>{describeKp(kp?.estimatedKp || 0)}</Text>
 
       {kpForecast ? (
-        <Text>Testing KP Forecast: {kpForecast[0]?.kp}</Text>
+        <Text>Testing KP Forecast: {kpForecast[0]?.kpIndex}</Text>
       ) : (
         <Text>Loading data...</Text>
       )}

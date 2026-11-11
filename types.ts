@@ -15,28 +15,28 @@ export type RootStackParamList = {
 };
 
 export type KpData = {
-    time_tag: string;
-    kp_index: number;
-    estimated_kp: number;
+    timeTag: string;
+    kpIndex: number;
+    estimatedKp: number;
 };
 
 export type KpForecast = {
-    time_tag: string;
-    kp: number;
+    timeTag: string;
+    kpIndex: number;
     observed: string;
 };
 
 export type Weather = {
     hourly: {
         time: string[];
-        cloud_cover: number[];
+        cloudCover: number[];
         visibility: number[];
     };
     daily: {
         time: string[];
         sunrise: string[];
         sunset: string[];
-        moon_phase: number[];
+        moonPhase: number[];
     };
 };
 
@@ -44,6 +44,21 @@ export type Coordinates = {
     latitude: number; 
     longitude: number 
 };
+
+export type Sighting = {
+    id: string;
+    timestamp: string;
+    latitude: number;
+    longitude: number;
+    note?: string;
+    rating: number;
+    photoUri?: string;
+    kpIndex: number;
+    cloudCover: number;
+    moonPhase: number;
+}
+
+export type NewSighting = Omit<Sighting, 'id'>;
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
     NativeStackScreenProps<RootStackParamList, T>;
