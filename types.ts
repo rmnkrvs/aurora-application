@@ -15,28 +15,28 @@ export type RootStackParamList = {
 };
 
 export type KpData = {
-    timeTag: string;
-    kpIndex: number;
-    estimatedKp: number;
+    time_tag: string;
+    kp_index: number;
+    estimated_kp: number;
 };
 
 export type KpForecast = {
-    timeTag: string;
-    kpForecast: number;
+    time_tag: string;
+    kp_forecast: number;
     observed: string;
 };
 
 export type Weather = {
     hourly: {
         time: string[];
-        cloudCover: number[];
+        cloud_cover: number[];
         visibility: number[];
     };
     daily: {
         time: string[];
         sunrise: string[];
         sunset: string[];
-        moonPhase: number[];
+        moon_phase: number[];
     };
 };
 

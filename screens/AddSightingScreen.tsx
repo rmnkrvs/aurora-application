@@ -1,17 +1,36 @@
 import { Button, Pressable, Text, TextInput, View } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { saveSighting } from '../db/sightings';
-import { RootStackScreenProps } from '../types';
+import { RootStackScreenProps, Weather, KpData } from '../types';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'react-native';
 import { File, Paths } from 'expo-file-system';
 import { RATINGS } from '../utils/ratings';
+import { useLocation } from '../hooks/location';
+import { getLatestKp } from '../api/noaa';
+import { getWeather } from '../api/openmeteo';
 
 export default function AddSightingScreen({ navigation }: RootStackScreenProps<'AddSighting'>) {
 
     const [rating, setRating] = useState(0);
     const [note, setNote] = useState('');
     const [photoUri, setPhotoUri] = useState<string | undefined>();
+    const location = useLocation();
+    const [kp, setKp] = useState<KpData | null>(null);
+    const [weather, setWeather] = useState<Weather | null>(null);
+
+    useEffect(() => {
+        getLatestKp()
+        .then(setKp)
+        .catch(console.error);
+    }, []);
+
+    useEffect(() => {
+        if (!location) return;
+        getWeather(location.latitude, location.longitude)
+        .then(setWeather)
+        .catch(console.error);
+    }, [location]);
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -52,17 +71,24 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
     };
 
     const handleSave = async () => {
+
+        if (!location || !kp || !weather) return;
+
+        const now = new Date();
+        const nextHour = weather.hourly.time.findIndex(time => new Date(time) > now);
+        const hourIndex = Math.max(0, nextHour - 1);
+
         try {
             await saveSighting({
-                timestamp: new Date().toISOString(),
-                latitude: 0,
-                longitude: 0,
+                timestamp: now.toISOString(),
+                latitude: location.latitude,
+                longitude: location.longitude,
                 rating,
-                note: note,
+                note,
                 photoUri,
-                kpIndex: 0,
-                cloudCover: 0,
-                moonPhase: 0
+                kpIndex: kp.kp_index,
+                cloudCover: weather.hourly.cloud_cover[hourIndex],
+                moonPhase: weather.daily.moon_phase[0],
             });
             navigation.goBack();
         } catch (error) {
@@ -103,6 +129,7 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
             <Button
                 title='Save'
                 onPress={handleSave}
+                disabled={!location || !kp || !weather}
             />
 
         </View>
