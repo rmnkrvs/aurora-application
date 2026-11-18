@@ -49,7 +49,7 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
             {item.photoUri ? <Card.Cover source={{ uri: item.photoUri }} /> : null}
             <Card.Title
               title={RATINGS.find(r => r.value === item.rating)?.label}
-              subtitle={new Date(item.timestamp).toLocaleString('fi-FI')}
+              subtitle={new Date(item.timestamp).toLocaleString('fi-FI', { dateStyle: 'short', timeStyle: 'short' })}
             />
             <Card.Content style={{ gap: 8 }}>
               {item.note ? <Text variant="bodyMedium">{item.note}</Text> : null}

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
@@ -6,7 +7,12 @@ import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
 import { useLocation } from '../hooks/location';
 
+const IMAGE_HEIGHT = 280;
+const OVERLAP = 120;
+
 export default function ForecastsScreen() {
+
+  const theme = useTheme();
 
   const [kp, setKp] = useState<KpData | null>(null);
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
@@ -34,27 +40,51 @@ export default function ForecastsScreen() {
   }, [location]);
 
   return (
-    <View style={styles.container}>
-      
-      {kp ? (
-        <Text>Testing KP: {kp.estimated_kp}</Text>
-      ) : (
-        <Text>Loading data...</Text>
-      )}
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
-      <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
+      <Image
+        source={require('../assets/revontuli-etusivu.jpg')}
+        style={styles.hero}
+        resizeMode='cover'
+      />
 
-      {kpForecast ? (
-        <Text>Testing KP Forecast: {kpForecast[0]?.kp_forecast}</Text>
-      ) : (
-        <Text>Loading data...</Text>
-      )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        overScrollMode="never"
+        contentContainerStyle={{ flexGrow: 1,paddingTop: IMAGE_HEIGHT - OVERLAP }}
+      >
+        <View style={[
+          styles.sheet,
+          {
+            backgroundColor: theme.colors.surface,
+          },
+        ]}
+        >
 
-      {weather ? (
-        <Text>Testing weather data / Sunset: {weather.daily.sunset[0]}</Text>
-      ) : (
-        <Text>Loading data...</Text>
-      )}
+          {kp ? (
+            <Text>Testing KP: {kp.estimated_kp}</Text>
+          ) : (
+            <Text>Loading data...</Text>
+          )}
+
+          <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
+
+          {kpForecast ? (
+            <Text>Testing KP Forecast: {kpForecast[0]?.kp_forecast}</Text>
+          ) : (
+            <Text>Loading data...</Text>
+          )}
+
+          {weather ? (
+            <Text>Testing weather data / Sunset: {weather.daily.sunset[0]}</Text>
+          ) : (
+            <Text>Loading data...</Text>
+          )}
+
+        </View>
+
+      </ScrollView>
 
     </View>
   );
@@ -63,8 +93,19 @@ export default function ForecastsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  hero: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: IMAGE_HEIGHT,
+  },
+  sheet: {
+    flex: 1,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 16,
+    gap: 16,
   },
 });
