@@ -1,4 +1,5 @@
-import { Button, Pressable, Text, TextInput, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Button, Card, TextInput, Text, SegmentedButtons } from 'react-native-paper';
 import { useState, useEffect } from 'react';
 import { saveSighting } from '../db/sightings';
 import { RootStackScreenProps, Weather, KpData } from '../types';
@@ -21,15 +22,15 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
 
     useEffect(() => {
         getLatestKp()
-        .then(setKp)
-        .catch(console.error);
+            .then(setKp)
+            .catch(console.error);
     }, []);
 
     useEffect(() => {
         if (!location) return;
         getWeather(location.latitude, location.longitude)
-        .then(setWeather)
-        .catch(console.error);
+            .then(setWeather)
+            .catch(console.error);
     }, [location]);
 
     const pickImage = async () => {
@@ -97,41 +98,73 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
     };
 
     return (
-        <View>
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
 
-            <Text>Add sighting</Text>
+            <Card>
 
-            <View>
-                {RATINGS.map(r => (
-                    <Pressable
-                        key={r.value}
-                        onPress={() => setRating(r.value)}
-                        style={{ backgroundColor: rating === r.value ? 'blue' : 'gray', padding: 10, margin: 5 }}
+                <Card.Title title='Add sighting' />
+
+                <Card.Content style={{ gap: 16 }}>
+                    <Text variant='headlineMedium'>Add sighting</Text>
+
+                    <SegmentedButtons
+                        value={String(rating)}
+                        onValueChange={value => setRating(Number(value))}
+                        buttons={[
+                            {
+                                value: '0',
+                                label: 'None',
+                            },
+                            {
+                                value: '1',
+                                label: 'Weak',
+                            },
+                            {
+                                value: '2',
+                                label: 'Clear'
+                            },
+                            {
+                                value: '3',
+                                label: 'Strong',
+                            }
+                        ]}
+                    />
+
+                    <TextInput
+                        mode='outlined'
+                        style={{ marginBottom: 10 }}
+                        label='Note'
+                        onChangeText={text => setNote(text)}
+                        value={note}
+                        multiline
+                    />
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Button
+                            mode='outlined'
+                            onPress={takePhoto}
+                        >
+                            Take a photo
+                        </Button>
+                        <Button
+                            mode='outlined'
+                            onPress={pickImage}
+                        >
+                            Choose from gallery
+                        </Button>
+                    </View>
+                    {photoUri && <Image source={{ uri: photoUri }} style={{ width: '100%', height: 200 }} />}
+
+                    <Button
+                        mode='contained'
+                        onPress={handleSave}
+                        disabled={!location || !kp || !weather}
                     >
-                        <Text style={{ color: 'white' }}>{r.label}</Text>
-                    </Pressable>
-                ))}
-            </View>
+                        Save
+                    </Button>
 
-            <TextInput
-                placeholder='Write a note'
-                onChangeText={text => setNote(text)}
-                value={note}
-                multiline
-            />
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Button title="Take a photo" onPress={takePhoto} />
-                <Button title="Choose from gallery" onPress={pickImage} />
-            </View>
-            {photoUri && <Image source={{ uri: photoUri }} style={{ width: 200, height: 200 }} />}
-
-            <Button
-                title='Save'
-                onPress={handleSave}
-                disabled={!location || !kp || !weather}
-            />
-
-        </View>
+                </Card.Content>
+            </Card>
+        </ScrollView>
     );
 }

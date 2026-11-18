@@ -13,6 +13,7 @@ import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { MD3DarkTheme, PaperProvider } from 'react-native-paper';
 import { adaptNavigationTheme } from 'react-native-paper';
 import { DarkTheme as NavigationDarkTheme } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -42,6 +43,7 @@ export default function App() {
 
   return (
     <PaperProvider theme={theme}>
+      <StatusBar style="light" />
       <NavigationContainer theme={DarkTheme}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
