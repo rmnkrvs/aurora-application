@@ -1,13 +1,16 @@
-import { Button, FlatList, StyleSheet, Text, View, Image } from 'react-native';
-import { useState, useEffect, useCallback } from 'react';
+import { FlatList, StyleSheet, View, Alert } from 'react-native';
+import { useState, useCallback } from 'react';
 import { Sighting, TabScreenProps } from '../types';
-import { getSightings } from '../db/sightings';
+import { deleteSighting, getSightings } from '../db/sightings';
 import { useFocusEffect } from '@react-navigation/native';
 import { RATINGS } from '../utils/ratings';
+import { Card, Text, Chip, FAB, useTheme } from 'react-native-paper';
 
 export default function SightingsScreen({ navigation }: TabScreenProps<'Sightings'>) {
 
   const [sightings, setSightings] = useState<Sighting[]>([]);
+
+  const theme = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -17,28 +20,54 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
     }, [])
   );
 
+  const confirmDelete = (id: number) => {
+    Alert.alert('Delete sighting?', 'This cannot be undone.', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          await deleteSighting(id);
+          setSightings(await getSightings());
+        },
+      },
+    ]);
+  };
+
   return (
-    <View style={styles.container}>
-      <Button
-        onPress={() => navigation.navigate('AddSighting')} title="Add Sighting" />
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
       <FlatList
         data={sightings}
         keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ padding: 16 }}
         ListEmptyComponent={
           <Text>No saved sightings yet</Text>
         }
         renderItem={({ item }) => (
-          <View>
-            <Text>Date: {new Date(item.timestamp).toLocaleString('fi-FI')}</Text>
-            <Text>Rating: {RATINGS.find(r => r.value === item.rating)?.label}</Text>
-            <Text>Note: {item.note}</Text>
-            {item.photoUri ? (
-              <Image source={{ uri: item.photoUri }} style={{ width: 100, height: 100 }} />
-            ) : null}
-          </View>
+          <Card style={styles.card} onLongPress={() => confirmDelete(item.id)}>
+            {item.photoUri ? <Card.Cover source={{ uri: item.photoUri }} /> : null}
+            <Card.Title
+              title={RATINGS.find(r => r.value === item.rating)?.label}
+              subtitle={new Date(item.timestamp).toLocaleString('fi-FI')}
+            />
+            <Card.Content style={{ gap: 8 }}>
+              {item.note ? <Text variant="bodyMedium">{item.note}</Text> : null}
+              <View style={styles.chips}>
+                <Chip icon="weather-night">Kp {item.kpIndex.toFixed(1)}</Chip>
+                <Chip icon="cloud-outline">{Math.round(item.cloudCover)} %</Chip>
+              </View>
+            </Card.Content>
+          </Card>
         )}
       />
+
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate('AddSighting')}
+      />
+
     </View>
   );
 }
@@ -46,6 +75,8 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
+  fab: { position: 'absolute', right: 16, bottom: 16 },
+  chips: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
+  card: { marginBottom: 12 },
 });
