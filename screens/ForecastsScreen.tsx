@@ -1,15 +1,16 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Chip, Text, useTheme } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
-import { formatForecastTime, getCurrentHourIndex, isDark } from '../utils/time';
+import { formatForecastTime, getCurrentHourIndex, isDark, formatLocalTime } from '../utils/time';
 import { useLocation } from '../hooks/location';
 import { calculateAuroraScore } from '../utils/score';
 import { getScoreMessage } from '../strings';
+import { getMoonPhase } from '../utils/moon';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -20,7 +21,9 @@ export default function ForecastsScreen() {
 
   const [kp, setKp] = useState<KpData | null>(null);
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
-  const [weather, setWeather] = useState<Weather | null>(null)
+  const [weather, setWeather] = useState<Weather | null>(null);
+
+  const moon = weather ? getMoonPhase(weather.daily.moon_phase[0]) : null;
 
   const { location, city } = useLocation();
 
@@ -64,7 +67,6 @@ export default function ForecastsScreen() {
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
 
-
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
@@ -80,6 +82,7 @@ export default function ForecastsScreen() {
         overScrollMode="never"
         contentContainerStyle={{ flexGrow: 1, paddingTop: IMAGE_HEIGHT - OVERLAP }}
       >
+
         <View style={[
           styles.sheet,
           {
@@ -89,45 +92,42 @@ export default function ForecastsScreen() {
         >
 
           {city ? (
-            <Text>City: {city}</Text>
-          ) : null}
+            <Text variant='bodyLarge'>{city}</Text>
+          ) :
+            <Text variant='bodyLarge'>Current location: Loading...</Text>}
+
+          <Text variant='bodyLarge'>Estimated chance to see Aurora:</Text>
 
           {score !== null ?
-            <Text>Aurora chance: {score}%</Text>
+            <Text variant='displayLarge'>{score}%</Text>
             :
             <Text>Calculating...</Text>}
 
           {score !== null && <Text>{getScoreMessage(score)}</Text>}
 
-          {kp ? (
-            <Text>Testing KP: {kp.estimated_kp}</Text>
-          ) : (
-            <Text>Loading data...</Text>
-          )}
-
-          <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
-
-          {kpForecast ? (
-            upcoming.map(row => (
-              <Text key={row.time_tag}>
-                {formatForecastTime(row.time_tag)} – Kp {row.kp}
-              </Text>
-            ))
+          {kp && weather && moon ? (
+            <View style={styles.chips}>
+              <Chip icon="flash">Kp {kp.estimated_kp.toFixed(0)}</Chip>
+              <Chip icon="weather-cloudy">Clouds {weather.hourly.cloud_cover[hourIndex]}%</Chip>
+              <Chip icon={moon.icon}>{moon.name}</Chip>
+            </View>
           ) : (
             <Text>Loading data...</Text>
           )}
 
           {weather ? (
-            <Text>Testing weather data / Sunset: {weather.daily.sunset[0]}</Text>
+            <View>
+              <Text>Sunrise: {formatLocalTime(weather.daily.sunrise[0])} - Sunset: {formatLocalTime(weather.daily.sunset[0])}</Text>
+            </View>
           ) : (
             <Text>Loading data...</Text>
           )}
 
         </View>
 
-      </ScrollView>
+      </ScrollView >
 
-    </View>
+    </View >
   );
 }
 
@@ -148,5 +148,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     padding: 16,
     gap: 16,
+  },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap', // wraps to a second line on a narrow screen
+    gap: 8,
   },
 });
