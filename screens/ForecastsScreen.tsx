@@ -1,4 +1,4 @@
-import { ScrollView, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
@@ -6,6 +6,7 @@ import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
+import { formatForecastTime } from '../utils/time';
 import { useLocation } from '../hooks/location';
 
 const IMAGE_HEIGHT = 350;
@@ -20,6 +21,9 @@ export default function ForecastsScreen() {
   const [weather, setWeather] = useState<Weather | null>(null)
 
   const location = useLocation();
+
+  // NOAA data starts with past measurements, use only future forecasts
+  const upcoming = kpForecast?.filter(row => row.observed === 'predicted') ?? [];
 
   useEffect(() => {
     getLatestKp()
@@ -72,7 +76,11 @@ export default function ForecastsScreen() {
           <Text>{describeKp(kp?.estimated_kp || 0)}</Text>
 
           {kpForecast ? (
-            <Text>Testing KP Forecast: {kpForecast[0]?.kp_forecast}</Text>
+            upcoming.map(row => (
+              <Text key={row.time_tag}>
+                {formatForecastTime(row.time_tag)} – Kp {row.kp}
+              </Text>
+            ))
           ) : (
             <Text>Loading data...</Text>
           )}

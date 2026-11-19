@@ -23,8 +23,9 @@ export type KpData = {
 
 export type KpForecast = {
     time_tag: string;
-    kp_forecast: number;
-    observed: string;
+    kp: number;
+    observed: 'observed' | 'estimated' | 'predicted'; // "observed" = measured, "estimated" = current, "predicted" = future
+    noaa_scale: string | null; // strong level, null when there is no storm
 };
 
 export type Weather = {
