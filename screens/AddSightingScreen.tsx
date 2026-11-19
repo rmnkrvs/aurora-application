@@ -16,7 +16,7 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
     const [rating, setRating] = useState(0);
     const [note, setNote] = useState('');
     const [photoUri, setPhotoUri] = useState<string | undefined>();
-    const location = useLocation();
+    const { location } = useLocation();
     const [kp, setKp] = useState<KpData | null>(null);
     const [weather, setWeather] = useState<Weather | null>(null);
 

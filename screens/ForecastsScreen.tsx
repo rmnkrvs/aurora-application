@@ -7,7 +7,7 @@ import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
 import { formatForecastTime } from '../utils/time';
-import { useLocation } from '../hooks/location';
+import { useLocation, city } from '../hooks/location';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -20,10 +20,14 @@ export default function ForecastsScreen() {
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
   const [weather, setWeather] = useState<Weather | null>(null)
 
-  const location = useLocation();
+  const { location, city } = useLocation();
 
-  // NOAA data starts with past measurements, use only future forecasts
-  const upcoming = kpForecast?.filter(row => row.observed === 'predicted') ?? [];
+  // NOAA data starts with past measurements, use only future forecasts ('estimated' and 'predicted')
+  const now = Date.now();
+  const THREE_HOURS = 3 * 60 * 60 * 1000;
+  const upcoming = kpForecast?.filter(row =>
+    new Date(row.time_tag + 'Z').getTime() + THREE_HOURS > now
+  ) ?? [];
 
   useEffect(() => {
     getLatestKp()
@@ -66,6 +70,10 @@ export default function ForecastsScreen() {
           },
         ]}
         >
+          
+          {city ? (
+            <Text>City: {city}</Text>
+          ) : null}
 
           {kp ? (
             <Text>Testing KP: {kp.estimated_kp}</Text>
