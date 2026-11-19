@@ -9,6 +9,7 @@ import describeKp from '../utils/kp';
 import { formatForecastTime, getCurrentHourIndex, isDark } from '../utils/time';
 import { useLocation } from '../hooks/location';
 import { calculateAuroraScore } from '../utils/score';
+import { getScoreMessage } from '../strings';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -95,6 +96,8 @@ export default function ForecastsScreen() {
             <Text>Aurora chance: {score}%</Text>
             :
             <Text>Calculating...</Text>}
+
+          {score !== null && <Text>{getScoreMessage(score)}</Text>}
 
           {kp ? (
             <Text>Testing KP: {kp.estimated_kp}</Text>
