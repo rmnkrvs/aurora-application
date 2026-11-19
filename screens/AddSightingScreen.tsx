@@ -10,6 +10,7 @@ import { RATINGS } from '../utils/ratings';
 import { useLocation } from '../hooks/location';
 import { getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo';
+import { getCurrentHourIndex } from '../utils/time';
 
 export default function AddSightingScreen({ navigation }: RootStackScreenProps<'AddSighting'>) {
 
@@ -75,13 +76,11 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
 
         if (!location || !kp || !weather) return;
 
-        const now = new Date();
-        const nextHour = weather.hourly.time.findIndex(time => new Date(time) > now);
-        const hourIndex = Math.max(0, nextHour - 1);
+        const hourIndex = getCurrentHourIndex(weather.hourly.time);
 
         try {
             await saveSighting({
-                timestamp: now.toISOString(),
+                timestamp: new Date().toISOString(),
                 latitude: location.latitude,
                 longitude: location.longitude,
                 rating,

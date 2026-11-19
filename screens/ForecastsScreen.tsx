@@ -6,8 +6,8 @@ import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
-import { formatForecastTime, isDark } from '../utils/time';
-import { useLocation, city } from '../hooks/location';
+import { formatForecastTime, getCurrentHourIndex, isDark } from '../utils/time';
+import { useLocation } from '../hooks/location';
 import { calculateAuroraScore } from '../utils/score';
 
 const IMAGE_HEIGHT = 350;
@@ -22,6 +22,8 @@ export default function ForecastsScreen() {
   const [weather, setWeather] = useState<Weather | null>(null)
 
   const { location, city } = useLocation();
+
+  const hourIndex = weather ? getCurrentHourIndex(weather.hourly.time) : 0;
 
   const dark = weather ? isDark(weather.daily.sunrise[0], weather.daily.sunset[0]) : false;
 
@@ -50,10 +52,6 @@ export default function ForecastsScreen() {
       .then(setWeather)
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
-
-useEffect(() => {
-    // Temporary test, remove after the score works
-console.log(isDark('2026-11-19T09:12', '2026-11-19T15:40', new Date('2026-11-19T20:00')));}, []);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
