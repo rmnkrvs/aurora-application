@@ -2,7 +2,6 @@ import { ScoreInput } from '../types';
 
 export function calculateAuroraScore(input: ScoreInput): number {
 
-
     const cloudFactor = 1 - (input.cloudCover / 100);
 
     // Moon phase: 0 = new moon, 0.5 = full moon, 1 = new moon again.

@@ -27,6 +27,16 @@ export default function ForecastsScreen() {
 
   const dark = weather ? isDark(weather.daily.sunrise[0], weather.daily.sunset[0]) : false;
 
+  const score = kp && weather && location
+    ? calculateAuroraScore({
+      kp: kp.estimated_kp,
+      cloudCover: weather.hourly.cloud_cover[hourIndex],
+      moonPhase: weather.daily.moon_phase[0],
+      isDark: dark,
+      latitude: location.latitude,
+    })
+    : null;
+
   // NOAA data starts with past measurements, use only future forecasts ('estimated' and 'predicted')
   const now = Date.now();
   const THREE_HOURS = 3 * 60 * 60 * 1000;
@@ -52,6 +62,7 @@ export default function ForecastsScreen() {
       .then(setWeather)
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
+
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -79,6 +90,11 @@ export default function ForecastsScreen() {
           {city ? (
             <Text>City: {city}</Text>
           ) : null}
+
+          {score !== null ?
+            <Text>Aurora chance: {score}%</Text>
+            :
+            <Text>Calculating...</Text>}
 
           {kp ? (
             <Text>Testing KP: {kp.estimated_kp}</Text>
