@@ -9,11 +9,14 @@ export function calculateAuroraScore(input: ScoreInput): number {
     // Convert it to brightness: 0 (dark) … 1 (fully lit).
     const illumination = 1 - Math.abs(input.moonPhase - 0.5) * 2;
     const moonFactor = 1 - 0.3 * illumination; // 30% dimming at full moon
-    
+
     const darknessFactor = input.isDark ? 1 : 0;
 
+    // Rough estimate: the further north, the lower the Kp needed.
+    // ~Kp 5 at 60°N (Helsinki), ~Kp 2 at 66°N (Rovaniemi).
+    const requiredKp = Math.max(1, 5 - (input.latitude - 60) * 0.5);
 
-    return (
-        Math.round(100 * cloudFactor * moonFactor * darknessFactor)
-    )
+    const kpFactor = Math.min(1, input.kp / requiredKp);
+
+    return Math.round(100 * kpFactor * cloudFactor * moonFactor * darknessFactor);
 }

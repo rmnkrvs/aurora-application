@@ -6,7 +6,7 @@ import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
-import { formatForecastTime } from '../utils/time';
+import { formatForecastTime, isDark } from '../utils/time';
 import { useLocation, city } from '../hooks/location';
 import { calculateAuroraScore } from '../utils/score';
 
@@ -22,6 +22,8 @@ export default function ForecastsScreen() {
   const [weather, setWeather] = useState<Weather | null>(null)
 
   const { location, city } = useLocation();
+
+  const dark = weather ? isDark(weather.daily.sunrise[0], weather.daily.sunset[0]) : false;
 
   // NOAA data starts with past measurements, use only future forecasts ('estimated' and 'predicted')
   const now = Date.now();
@@ -51,7 +53,7 @@ export default function ForecastsScreen() {
 
 useEffect(() => {
     // Temporary test, remove after the score works
-console.log(calculateAuroraScore({ kp: 3, cloudCover: 0, moonPhase: 0.5, isDark: true, latitude: 60 }));}, []);
+console.log(isDark('2026-11-19T09:12', '2026-11-19T15:40', new Date('2026-11-19T20:00')));}, []);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
