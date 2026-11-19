@@ -60,6 +60,14 @@ export type Sighting = {
     moonPhase: number;
 }
 
+export type ScoreInput = {
+    kp: number;
+    cloudCover: number;
+    moonPhase: number;
+    isDark: boolean;
+    latitude: number;
+}
+
 export type NewSighting = Omit<Sighting, 'id'>;
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

@@ -8,6 +8,7 @@ import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
 import { formatForecastTime } from '../utils/time';
 import { useLocation, city } from '../hooks/location';
+import { calculateAuroraScore } from '../utils/score';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -48,6 +49,10 @@ export default function ForecastsScreen() {
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
 
+useEffect(() => {
+    // Temporary test, remove after the score works
+console.log(calculateAuroraScore({ kp: 3, cloudCover: 0, moonPhase: 0.5, isDark: true, latitude: 60 }));}, []);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
@@ -70,7 +75,7 @@ export default function ForecastsScreen() {
           },
         ]}
         >
-          
+
           {city ? (
             <Text>City: {city}</Text>
           ) : null}
