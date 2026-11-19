@@ -1,5 +1,6 @@
-import { Image, ScrollView, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { ScrollView, View, StyleSheet, useWindowDimensions } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
+import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
@@ -7,7 +8,7 @@ import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
 import { useLocation } from '../hooks/location';
 
-const IMAGE_HEIGHT = 280;
+const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
 
 export default function ForecastsScreen() {
@@ -43,16 +44,16 @@ export default function ForecastsScreen() {
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
       <Image
-        source={require('../assets/revontuli-etusivu.jpg')}
+        source={require('../assets/revontuli-vaaka.jpg')}
         style={styles.hero}
-        resizeMode='cover'
+        contentFit="cover"
       />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces={false}
         overScrollMode="never"
-        contentContainerStyle={{ flexGrow: 1,paddingTop: IMAGE_HEIGHT - OVERLAP }}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: IMAGE_HEIGHT - OVERLAP }}
       >
         <View style={[
           styles.sheet,

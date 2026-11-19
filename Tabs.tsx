@@ -15,7 +15,8 @@ export default function Tabs() {
                 name="Forecasts"
                 component={ForecastsScreen}
                 options={{
-                    tabBarIcon: ({ size, color }) => <Ionicons name='moon-outline' size={size} color={color} />
+                    tabBarIcon: ({ size, color }) => <Ionicons name='moon-outline' size={size} color={color} />,
+                    headerShown: false
                 }}
             />
             <Tab.Screen
