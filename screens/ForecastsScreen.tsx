@@ -8,7 +8,7 @@ import { KpData, KpForecast, Weather } from '../types';
 import describeKp from '../utils/kp';
 import { formatForecastTime, getCurrentHourIndex, isDark, formatLocalTime } from '../utils/time';
 import { useLocation } from '../hooks/location';
-import { calculateAuroraScore } from '../utils/score';
+import { calculateScore } from '../utils/score';
 import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
@@ -36,8 +36,8 @@ export default function ForecastsScreen() {
 
   const dark = weather ? isDark(weather.daily.sunrise[0], weather.daily.sunset[0]) : false;
 
-  const score = kp && weather && location
-    ? calculateAuroraScore({
+  const details = kp && weather && location
+    ? calculateScore({
       kp: kp.estimated_kp,
       cloudCover: weather.hourly.cloud_cover[hourIndex],
       moonPhase: weather.daily.moon_phase[0],
@@ -45,6 +45,8 @@ export default function ForecastsScreen() {
       latitude: location.latitude,
     })
     : null;
+
+    const score = details?.score ?? null;
 
   // NOAA data starts with past measurements, use only future forecasts ('estimated' and 'predicted')
   const now = Date.now();

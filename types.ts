@@ -68,6 +68,17 @@ export type ScoreInput = {
     latitude: number;
 };
 
+export type ScoreDetails = {
+    score: number;
+    requiredKp: number;
+    factors: {
+        kp: number;
+        clouds: number;
+        darkness: number;
+        moon: number;
+    };
+};
+
 export type ForecastSlot = {
     time: Date;
     kp: number;

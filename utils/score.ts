@@ -1,6 +1,6 @@
-import { ScoreInput } from '../types';
+import { ScoreInput, ScoreDetails } from '../types';
 
-export function calculateAuroraScore(input: ScoreInput): number {
+export function calculateScore(input: ScoreInput): ScoreDetails {
 
     const cloudFactor = 1 - (input.cloudCover / 100);
 
@@ -17,5 +17,16 @@ export function calculateAuroraScore(input: ScoreInput): number {
 
     const kpFactor = Math.min(1, input.kp / requiredKp);
 
-    return Math.round(100 * kpFactor * cloudFactor * moonFactor * darknessFactor);
+    const score = Math.round(100 * kpFactor * cloudFactor * moonFactor * darknessFactor);
+
+    return {
+        score,
+        requiredKp,
+        factors: {
+            kp: kpFactor,
+            clouds: cloudFactor,
+            darkness: darknessFactor,
+            moon: moonFactor,
+        },
+    };
 }
