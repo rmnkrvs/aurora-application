@@ -11,7 +11,7 @@ import { calculateScore } from '../utils/score';
 import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
-import ScoreInfoDialog from '../components/scoreInfoDialog';
+import ScoreInfoDialog from '../components/ScoreInfoDialog';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;

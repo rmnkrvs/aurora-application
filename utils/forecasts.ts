@@ -21,15 +21,17 @@ export function buildForecast(
 
         const cloudCover = weather.hourly.cloud_cover[hourIndex];
 
+        const dark = isDark(weather.daily.sunrise[dayIndex], weather.daily.sunset[dayIndex], time);
+
         const score = calculateScore({
             kp: row.kp,
             cloudCover,
             moonPhase: weather.daily.moon_phase[dayIndex],
-            isDark: isDark(weather.daily.sunrise[dayIndex], weather.daily.sunset[dayIndex], time),
+            isDark: dark,
             latitude,
         }).score;
 
-        slots.push({ time, kp: row.kp, cloudCover, score });
+        slots.push({ time, kp: row.kp, cloudCover, score, isDark: dark });
     }
 
     return slots;

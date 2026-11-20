@@ -84,6 +84,12 @@ export type ForecastSlot = {
     kp: number;
     cloudCover: number;
     score: number;
+    isDark: boolean;
+};
+
+export type ScoreLevel = {
+    label: string;
+    color: string;
 };
 
 export type NewSighting = Omit<Sighting, 'id'>;

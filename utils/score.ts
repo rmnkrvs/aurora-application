@@ -1,4 +1,5 @@
-import { ScoreInput, ScoreDetails } from '../types';
+import { MD3Theme } from 'react-native-paper';
+import { ScoreInput, ScoreDetails, ScoreLevel } from '../types';
 
 export function calculateScore(input: ScoreInput): ScoreDetails {
 
@@ -29,4 +30,18 @@ export function calculateScore(input: ScoreInput): ScoreDetails {
             moon: moonFactor,
         },
     };
+}
+
+export function getScoreLevel(score: number, theme: MD3Theme): ScoreLevel {
+
+    if (score >= 85) {
+        return { label: 'Excellent', color: theme.colors.primary };
+    }
+    if (score >= 60) {
+        return { label: 'Good', color: theme.colors.primary };
+    }
+    if (score >= 30) {
+        return { label: 'Fair', color: '#E6C65C' };
+    }
+    return { label: 'Low', color: theme.colors.outline }; 
 }
