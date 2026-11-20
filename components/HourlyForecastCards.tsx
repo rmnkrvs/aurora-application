@@ -1,41 +1,68 @@
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { slots } from '../utils/forecasts';
+import { Icon, Text, useTheme } from 'react-native-paper';
+import { ForecastSlot } from '../types';
+import { getScoreLevel } from '../utils/score';
 
-export function HourlyForecast(slots) {
+type Props = {
+    slots: ForecastSlot[];
+};
 
+export default function HourlyForecast({ slots }: Props) {
 
+    const theme = useTheme();
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
-            <ScrollView style={styles.scrollView}>
-                <Text style={styles.text}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                    minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in
-                    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                </Text>
-            </ScrollView>
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.content}
+        >
+            {slots.map(slot => {
+                const level = getScoreLevel(slot.score, theme);
 
-        </View>
+                return (
+                    <View
+                        key={slot.time.toISOString()}
+                        style={[
+                            styles.card,
+                            {
+                                backgroundColor: theme.colors.surfaceVariant,
+                                opacity: slot.isDark ? 1 : 0.5,
+                            },
+                        ]}
+                    >
+                        <Text variant='labelMedium'>
+                            {slot.time.toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' })}
+                        </Text>
 
-      }
+                        {slot.isDark ? (
+                            <Text variant='titleLarge' style={{ color: level.color }}>
+                                {slot.score}%
+                            </Text>
+                        ) : (
+                            <Icon source='weather-sunny' size={24} color={theme.colors.onSurfaceVariant} />
+                        )}
 
+                        <Text variant='labelSmall' style={{ color: level.color }}>
+                            {slot.isDark ? level.label : 'Daylight'}
+                        </Text>
+                    </View>
+                );
+            })}
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: StatusBar.currentHeight,
+    content: {
+        gap: 8,
     },
-    scrollView: {
-        backgroundColor: 'pink',
-    },
-    text: {
-        fontSize: 42,
-        padding: 12,
+    card: {
+        width: 72,
+        paddingVertical: 12,
+        borderRadius: 16,
+        alignItems: 'center',
+        gap: 4,
     },
 });

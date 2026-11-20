@@ -12,6 +12,7 @@ import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
 import ScoreInfoDialog from '../components/ScoreInfoDialog';
+import HourlyForecast from '../components/HourlyForecastCards';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -55,6 +56,10 @@ export default function ForecastsScreen() {
   const upcoming = kpForecast?.filter(row =>
     new Date(row.time_tag + 'Z').getTime() + THREE_HOURS > now
   ) ?? [];
+
+  const forecast = kpForecast && weather && location
+    ? buildForecast(upcoming, weather, location.latitude)
+    : [];
 
   useEffect(() => {
     getLatestKp()
@@ -140,6 +145,9 @@ export default function ForecastsScreen() {
           ) : (
             <Text>Loading data...</Text>
           )}
+
+          <Text variant='titleMedium'>Next hours</Text>
+          <HourlyForecast slots={forecast.slice(0, 8)} />
 
         </View>
 
