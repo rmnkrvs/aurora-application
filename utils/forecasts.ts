@@ -1,5 +1,5 @@
 import { KpForecast, Weather, ForecastSlot } from '../types';
-import { calculateAuroraScore } from './score';
+import { calculateScore } from './score';
 import { getCurrentHourIndex, isDark } from './time';
 
 export function buildForecast(
@@ -21,13 +21,13 @@ export function buildForecast(
 
         const cloudCover = weather.hourly.cloud_cover[hourIndex];
 
-        const score = calculateAuroraScore({
+        const score = calculateScore({
             kp: row.kp,
             cloudCover,
             moonPhase: weather.daily.moon_phase[dayIndex],
-            isDark: isDark(weather.daily.sunrise[dayIndex], weather.daily.sunset[dayIndex]),
+            isDark: isDark(weather.daily.sunrise[dayIndex], weather.daily.sunset[dayIndex], time),
             latitude,
-        });
+        }).score;
 
         slots.push({ time, kp: row.kp, cloudCover, score });
     }

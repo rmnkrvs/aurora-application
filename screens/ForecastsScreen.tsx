@@ -1,17 +1,17 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { Chip, Text, useTheme, Dialog, Portal, Button, IconButton } from 'react-native-paper';
+import { Chip, Text, useTheme, IconButton } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
-import describeKp from '../utils/kp';
-import { formatForecastTime, getCurrentHourIndex, isDark, formatLocalTime } from '../utils/time';
+import { getCurrentHourIndex, isDark, formatLocalTime } from '../utils/time';
 import { useLocation } from '../hooks/location';
 import { calculateScore } from '../utils/score';
 import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
+import ScoreInfoDialog from '../components/scoreInfoDialog';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -23,6 +23,7 @@ export default function ForecastsScreen() {
   const [kp, setKp] = useState<KpData | null>(null);
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
   const [weather, setWeather] = useState<Weather | null>(null);
+
   const [visible, setVisible] = useState(false);
 
   const showDialog = () => setVisible(true);
@@ -46,7 +47,7 @@ export default function ForecastsScreen() {
     })
     : null;
 
-    const score = details?.score ?? null;
+  const score = details?.score ?? null;
 
   // NOAA data starts with past measurements, use only future forecasts ('estimated' and 'predicted')
   const now = Date.now();
@@ -73,9 +74,6 @@ export default function ForecastsScreen() {
       .then(setWeather)
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
-
-
-
 
 
   return (
@@ -108,27 +106,15 @@ export default function ForecastsScreen() {
             <Text variant='bodyLarge'>Current location: Loading...</Text>}
 
           <View style={styles.row}>
-          <Text variant='bodyLarge'>Estimated chance to see Aurora</Text>
-          <IconButton 
-          icon='information-outline'
-          size={18}
-          onPress={showDialog}
-          style={styles.info}
-          accessibilityLabel='How is this calculated?'
-          />
+            <Text variant='bodyLarge'>Estimated chance to see Aurora</Text>
+            <IconButton
+              icon='information-outline'
+              size={18}
+              onPress={showDialog}
+              style={styles.info}
+              accessibilityLabel='How is this calculated?'
+            />
           </View>
-
-          <Portal>
-            <Dialog visible={visible} onDismiss={hideDialog}>
-              <Dialog.Title>Info</Dialog.Title>
-              <Dialog.Content>
-                <Text variant='bodyMedium'>Aurora forecast has been calculated in this way</Text>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={hideDialog}>Done</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
 
           {score !== null ?
             <Text variant='displayLarge'>{score}%</Text>
@@ -157,7 +143,21 @@ export default function ForecastsScreen() {
 
         </View>
 
-      </ScrollView >
+      </ScrollView>
+
+      {
+        details && kp && weather && moon && (
+          <ScoreInfoDialog
+            visible={visible}
+            onDismiss={hideDialog}
+            details={details}
+            kp={kp.estimated_kp}
+            cloudCover={weather.hourly.cloud_cover[hourIndex]}
+            isDark={dark}
+            moonName={moon.name}
+          />
+        )
+      }
 
     </View >
   );
