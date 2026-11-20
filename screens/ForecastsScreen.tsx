@@ -1,5 +1,5 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { Chip, Text, useTheme } from 'react-native-paper';
+import { Chip, Text, useTheme, Dialog, Portal, Button, IconButton } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
@@ -23,6 +23,10 @@ export default function ForecastsScreen() {
   const [kp, setKp] = useState<KpData | null>(null);
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
   const [weather, setWeather] = useState<Weather | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
 
   const moon = weather ? getMoonPhase(weather.daily.moon_phase[0]) : null;
 
@@ -68,9 +72,9 @@ export default function ForecastsScreen() {
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
 
-  if (weather && location) {
-  console.log(buildForecast(upcoming, weather, location.latitude));
-}
+
+
+
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -101,7 +105,28 @@ export default function ForecastsScreen() {
           ) :
             <Text variant='bodyLarge'>Current location: Loading...</Text>}
 
-          <Text variant='bodyLarge'>Estimated chance to see Aurora:</Text>
+          <View style={styles.row}>
+          <Text variant='bodyLarge'>Estimated chance to see Aurora</Text>
+          <IconButton 
+          icon='information-outline'
+          size={18}
+          onPress={showDialog}
+          style={styles.info}
+          accessibilityLabel='How is this calculated?'
+          />
+          </View>
+
+          <Portal>
+            <Dialog visible={visible} onDismiss={hideDialog}>
+              <Dialog.Title>Info</Dialog.Title>
+              <Dialog.Content>
+                <Text variant='bodyMedium'>Aurora forecast has been calculated in this way</Text>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={hideDialog}>Done</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
 
           {score !== null ?
             <Text variant='displayLarge'>{score}%</Text>
@@ -159,4 +184,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap', // wraps to a second line on a narrow screen
     gap: 8,
   },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  info: {
+    margin: 0,
+  }
 });
