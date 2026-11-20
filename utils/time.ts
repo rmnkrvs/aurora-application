@@ -1,13 +1,9 @@
-export function getCurrentHourIndex(times: string[]): number {
-    const now = new Date();
-    const nextHour = times.findIndex(time => new Date(time) > now);
-
+export function getCurrentHourIndex(times: string[], at: Date = new Date()): number {
+    const nextHour = times.findIndex(time => new Date(time) > at);
     if (nextHour === -1) {
         return times.length - 1;
     }
-
     const hourIndex = Math.max(0, nextHour - 1);
-
     return hourIndex;
 }
 

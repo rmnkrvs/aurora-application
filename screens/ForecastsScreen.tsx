@@ -9,6 +9,7 @@ import describeKp from '../utils/kp';
 import { formatForecastTime, getCurrentHourIndex, isDark, formatLocalTime } from '../utils/time';
 import { useLocation } from '../hooks/location';
 import { calculateAuroraScore } from '../utils/score';
+import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
 
@@ -66,6 +67,10 @@ export default function ForecastsScreen() {
       .then(setWeather)
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
+
+  if (weather && location) {
+  console.log(buildForecast(upcoming, weather, location.latitude));
+}
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>

@@ -58,7 +58,7 @@ export type Sighting = {
     kpIndex: number;
     cloudCover: number;
     moonPhase: number;
-}
+};
 
 export type ScoreInput = {
     kp: number;
@@ -66,7 +66,14 @@ export type ScoreInput = {
     moonPhase: number;
     isDark: boolean;
     latitude: number;
-}
+};
+
+export type ForecastSlot = {
+    time: Date;
+    kp: number;
+    cloudCover: number;
+    score: number;
+};
 
 export type NewSighting = Omit<Sighting, 'id'>;
 
