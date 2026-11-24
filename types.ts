@@ -58,6 +58,7 @@ export type Sighting = {
     kpIndex: number;
     cloudCover: number;
     moonPhase: number;
+    score: number | null;
 };
 
 export type ScoreInput = {

@@ -11,6 +11,8 @@ import { useLocation } from '../hooks/location';
 import { getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo';
 import { getCurrentHourIndex } from '../utils/time';
+import { calculateScore } from '../utils/score';
+import { isDark } from '../utils/time';
 
 export default function AddSightingScreen({ navigation }: RootStackScreenProps<'AddSighting'>) {
 
@@ -78,6 +80,14 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
 
         const hourIndex = getCurrentHourIndex(weather.hourly.time);
 
+        const score = calculateScore({
+            kp: kp.estimated_kp,
+            cloudCover: weather.hourly.cloud_cover[hourIndex],
+            moonPhase: weather.daily.moon_phase[0],
+            isDark: isDark(weather.daily.sunrise[0], weather.daily.sunset[0]),
+            latitude: location.latitude,
+        }).score;
+
         try {
             await saveSighting({
                 timestamp: new Date().toISOString(),
@@ -86,9 +96,10 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
                 rating,
                 note,
                 photoUri,
-                kpIndex: kp.kp_index,
+                kpIndex: kp.estimated_kp,
                 cloudCover: weather.hourly.cloud_cover[hourIndex],
                 moonPhase: weather.daily.moon_phase[0],
+                score,
             });
             navigation.goBack();
         } catch (error) {

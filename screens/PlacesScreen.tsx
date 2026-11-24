@@ -1,4 +1,5 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet } from 'react-native';
+import { Text, useTheme } from 'react-native-paper';
 import { WebView } from 'react-native-webview';
 
 import { useCallback, useMemo, useState } from 'react';
@@ -43,7 +44,9 @@ function buildMap(markers: MapMarker[]): string {
     }).addTo(map);
 
     markers.forEach(m => {
-    L.marker([m.latitude, m.longitude]).addTo(map).bindPopup(m.text);
+    const element = document.createElement('div');
+    element.textContent = m.text;
+    L.marker([m.latitude, m.longitude]).addTo(map).bindPopup(element);
     });
 
     const points = markers.map(m => [m.latitude, m.longitude]);
@@ -57,6 +60,8 @@ function buildMap(markers: MapMarker[]): string {
 }
 
 export default function PlacesScreen() {
+
+  const theme = useTheme();
 
   const [sightings, setSightings] = useState<Sighting[]>([]);
 
@@ -74,19 +79,35 @@ export default function PlacesScreen() {
       longitude: s.longitude,
       text:
         new Date(s.timestamp).toLocaleString('fi-FI', { dateStyle: 'short', timeStyle: 'short' }) +
-        ' . ' + RATINGS[s.rating].label + (s.note ? ': ' + s.note : ''),
+        ': ' + (s.note ? s.note : ''),
     }));
     return buildMap(markers);
   }, [sightings]);
 
   return (
-
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+    <View style={{ flex: 1 }}>
       <WebView
         style={{ flex: 1 }}
         originWhitelist={['*']}
         source={{ html }}
       />
-    </SafeAreaView>
+
+      {sightings.length === 0 && (
+        <View style={[styles.hint, { backgroundColor: theme.colors.surface }]}>
+          <Text variant='bodyMedium'>Places where you have reported seeing aurora will appear here.</Text>
+        </View>
+      )}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  hint: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    bottom: 16,
+    padding: 16,
+    borderRadius: 16,
+  },
+});

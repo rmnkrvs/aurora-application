@@ -12,12 +12,12 @@ const BAR_AREA_HEIGHT = 120;
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.statsWrapper}>
-    <Card>
-      <Card.Content style={styles.cardContent}>
-        <Text variant='headlineMedium'>{value}</Text>
-        <Text variant='labelMedium' style={styles.centered}>{label}</Text>
-      </Card.Content>
-    </Card>
+      <Card>
+        <Card.Content style={styles.cardContent}>
+          <Text variant='headlineMedium'>{value}</Text>
+          <Text variant='labelMedium' style={styles.centered}>{label}</Text>
+        </Card.Content>
+      </Card>
     </View>
   );
 }
@@ -56,12 +56,13 @@ export default function InsightsScreen() {
       contentContainerStyle={styles.content}
     >
       <View style={styles.cards}>
-        <StatCard label='Sightings' value={String(stats.total)} />
-        <StatCard label='Aurora seen' value={String(stats.seen)} />
-        <StatCard label='Average KP' value={stats.averageKp !== null ? stats.averageKp.toFixed(0) : '-'} />
+        <StatCard label='Total of sightings reported' value={String(stats.total)} />
+        <StatCard label='Aurora seen during sightings' value={String(stats.seen)} />
+        <StatCard label='Average KP when seen auroras' value={stats.averageKp !== null ? stats.averageKp.toFixed(0) : '-'} />
+        <StatCard label='Average forecast score when seen' value={stats.averageScore !== null ? `${Math.round(stats.averageScore)} %` : '-'} />
       </View>
 
-      <Text variant='titleMedium'>Sightings by rating</Text>
+      <Text variant='titleMedium'>How were your sightings?</Text>
 
       <View style={styles.bars}>
         {RATINGS.map(rating => {
@@ -95,7 +96,8 @@ export default function InsightsScreen() {
 
 const styles = StyleSheet.create({
   statsWrapper: {
-    flex: 1,
+    width: '47%',
+    flexGrow: 1,
   },
   cardContent: {
     alignItems: 'center',
@@ -116,6 +118,7 @@ const styles = StyleSheet.create({
   },
   cards: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   statCard: {
