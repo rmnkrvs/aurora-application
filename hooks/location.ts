@@ -5,6 +5,7 @@ import { Coordinates } from '../types';
 
 const DEFAULT_LOCATION = { latitude: 66.5, longitude: 25.7 };
 const DEFAULT_CITY = 'Rovaniemi';
+const UNKNOWN_CITY = 'Current location'; // shown when city name cant be found
 
 export function useLocation() {
 
@@ -17,20 +18,23 @@ export function useLocation() {
             try {
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
-                    Alert.alert('No permission to get location');
+                    Alert.alert('Location permission denied, showing default city instead.');
                     setLocation(DEFAULT_LOCATION);
                     setCity(DEFAULT_CITY);
                     return;
                 }
-                const position = await Location.getCurrentPositionAsync({});
+                const position = await Location.getCurrentPositionAsync({
+                    accuracy: Location.Accuracy.Low,
+                });
                 const { latitude, longitude } = position.coords;
                 setLocation({ latitude, longitude });
 
                 try {
                     const [place] = await Location.reverseGeocodeAsync({ latitude, longitude });
-                    setCity(place?.city ?? null);
+                    setCity(place?.city ?? UNKNOWN_CITY);
                 } catch (error) {
                     console.error('Error getting city name:', error);
+                    setCity(UNKNOWN_CITY);
                 }
 
             } catch (error) {

@@ -1,6 +1,8 @@
 import { MD3Theme } from 'react-native-paper';
 import { ScoreInput, ScoreDetails, ScoreLevel } from '../types';
 
+export const SCORE_LIMITS = { excellent: 85, good: 60, fair: 30, low: 5 };
+
 export function calculateScore(input: ScoreInput): ScoreDetails {
 
     const cloudFactor = 1 - (input.cloudCover / 100);
@@ -32,13 +34,13 @@ export function calculateScore(input: ScoreInput): ScoreDetails {
 
 export function getScoreLevel(score: number, theme: MD3Theme): ScoreLevel {
 
-    if (score >= 85) {
+    if (score >= SCORE_LIMITS.excellent) {
         return { label: 'Excellent', color: theme.colors.primary };
     }
-    if (score >= 60) {
+    if (score >= SCORE_LIMITS.good) {
         return { label: 'Good', color: theme.colors.primary };
     }
-    if (score >= 30) {
+    if (score >= SCORE_LIMITS.fair) {
         return { label: 'Fair', color: theme.colors.tertiary };
     }
     return { label: 'Low', color: theme.colors.onSurfaceVariant };

@@ -19,19 +19,13 @@ export async function initializeDatabase() {
         score REAL
     );
     `);
-
-    try {
-        await db.execAsync('ALTER TABLE sightings ADD COLUMN score REAL');
-    } catch {
-        // column already exists
-    }
 }
 
 export async function saveSighting(sighting: NewSighting) {
     await db.runAsync(
         'INSERT INTO sightings (timestamp, latitude, longitude, rating, note, photoUri, kpIndex, cloudCover, moonPhase, score) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [sighting.timestamp, sighting.latitude, sighting.longitude, sighting.rating, sighting.note ?? null, sighting.photoUri ?? null, sighting.kpIndex, sighting.cloudCover, sighting.moonPhase, sighting.score]
-    )
+    );
 }
 
 export async function getSightings(): Promise<Sighting[]> {

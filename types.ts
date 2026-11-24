@@ -32,7 +32,6 @@ export type Weather = {
     hourly: {
         time: string[];
         cloud_cover: number[];
-        visibility: number[];
     };
     daily: {
         time: string[];
