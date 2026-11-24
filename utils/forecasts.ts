@@ -17,7 +17,7 @@ export function buildForecast(
 
         const dayIndex = weather.daily.time.indexOf(time.toLocaleDateString('sv-SE'));
 
-        if (dayIndex === -1) continue;
+        if (dayIndex === -1) continue; // slot is outside Open Meteos forecast range
 
         const cloudCover = weather.hourly.cloud_cover[hourIndex];
 

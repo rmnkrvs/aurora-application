@@ -1,16 +1,9 @@
-import { Sighting } from '../types';
-
-type Stats = {
-    total: number;
-    seen: number;
-    averageKp: number | null;
-    averageScore: number | null;
-    countsByRating: number[];
-};
+import { Sighting, Stats } from '../types';
+import { RATINGS } from './ratings';
 
 export function calculateStats(sightings: Sighting[]): Stats {
 
-    const countsByRating = [0, 0, 0, 0]; // One counter per rating: [None, Weak, Clear, Strong]
+    const countsByRating = RATINGS.map(() => 0); // One counter per rating: [None, Weak, Clear, Strong]
     let seen = 0;
     let kpSum = 0;
     let scoreSum = 0;

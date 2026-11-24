@@ -10,6 +10,6 @@ const MOON_PHASES = [
 ];
 
 export function getMoonPhase(moonPhase: number) {
-    const index = Math.round(moonPhase * 8) % 8;
+    const index = Math.round(moonPhase * 8) % 8; // % 8 brings 1.0 back to new moon
     return MOON_PHASES[index];
 }

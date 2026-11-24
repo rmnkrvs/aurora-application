@@ -25,7 +25,7 @@ export type KpForecast = {
     time_tag: string;
     kp: number;
     observed: 'observed' | 'estimated' | 'predicted'; // "observed" = measured, "estimated" = current, "predicted" = future
-    noaa_scale: string | null; // strong level, null when there is no storm
+    noaa_scale: string | null; // NOAA storm scale, e.g. "G1", null when there is no storm
 };
 
 export type Weather = {
@@ -42,19 +42,19 @@ export type Weather = {
     };
 };
 
-export type Coordinates = { 
-    latitude: number; 
-    longitude: number 
+export type Coordinates = {
+    latitude: number;
+    longitude: number;
 };
 
 export type Sighting = {
     id: number;
-    timestamp: string;
+    timestamp: string; // ISO 8601 string, converted to date when displayed
     latitude: number;
     longitude: number;
-    note?: string;
-    rating: number;
-    photoUri?: string;
+    note?: string | null;
+    rating: number; // 0 = None, 1 = Weak, 2 = Clear, 3 = Strong
+    photoUri?: string | null;
     kpIndex: number;
     cloudCover: number;
     moonPhase: number;
@@ -93,6 +93,14 @@ export type ScoreLevel = {
     color: string;
 };
 
+export type Stats = {
+    total: number;
+    seen: number;
+    averageKp: number | null;
+    averageScore: number | null;
+    countsByRating: number[];
+};
+
 export type NewSighting = Omit<Sighting, 'id'>;
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =
@@ -101,4 +109,4 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
 export type TabScreenProps<T extends keyof TabParamList> = CompositeScreenProps<
     BottomTabScreenProps<TabParamList, T>,
     NativeStackScreenProps<RootStackParamList>
-    >;
+>;

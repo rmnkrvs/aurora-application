@@ -3,7 +3,7 @@ export function getCurrentHourIndex(times: string[], at: Date = new Date()): num
     if (nextHour === -1) {
         return times.length - 1;
     }
-    const hourIndex = Math.max(0, nextHour - 1);
+    const hourIndex = Math.max(0, nextHour - 1); // First hour in the future is the end of the current hour, so the current is the previous index
     return hourIndex;
 }
 
@@ -16,6 +16,10 @@ export function formatForecastTime(timeTag: string) {
 
 export function formatLocalTime(time: string): string {
     return new Date(time).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+}
+
+export function toDateKey(date: Date): string {
+    return date.toLocaleDateString('sv-SE'); // 'sv-SE' formats as YYYY-MM-DD which matches Open-Meteo's daily.time
 }
 
 export function isDark(sunrise: string, sunset: string, now: Date = new Date()): boolean {
