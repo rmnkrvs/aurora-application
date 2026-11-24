@@ -55,10 +55,18 @@ export default function InsightsScreen() {
       style={{ backgroundColor: theme.colors.background }}
       contentContainerStyle={styles.content}
     >
+
+      <Text variant="bodyMedium" style={styles.intro}>
+        Every sighting you save is stored on this device. Here you can see how
+        often you have seen the aurora and how well the forecast matched what
+        you saw.
+      </Text>
+
+      <Text variant="titleMedium">Overview</Text>
       <View style={styles.cards}>
         <StatCard label='Total of sightings reported' value={String(stats.total)} />
         <StatCard label='Aurora seen during sightings' value={String(stats.seen)} />
-        <StatCard label='Average KP when seen auroras' value={stats.averageKp !== null ? stats.averageKp.toFixed(0) : '-'} />
+        <StatCard label='Average KP when seen auroras' value={stats.averageKp !== null ? stats.averageKp.toFixed(1) : '-'} />
         <StatCard label='Average forecast score when seen' value={stats.averageScore !== null ? `${Math.round(stats.averageScore)} %` : '-'} />
       </View>
 
@@ -88,6 +96,12 @@ export default function InsightsScreen() {
           );
         })}
       </View>
+
+      <Text variant="bodySmall" style={styles.hint}>
+        Forecast score is the chance estimate the app showed when you saved the
+        sighting. If it is usually high when you see the aurora, the estimate
+        works well for your location.
+      </Text>
 
     </ScrollView>
 
@@ -141,5 +155,13 @@ const styles = StyleSheet.create({
     height: BAR_AREA_HEIGHT,
     justifyContent: 'flex-end',
     alignItems: 'center',
+  },
+  intro: {
+    opacity: 0.8,
+    marginTop: 4,
+  },
+  hint: {
+    opacity: 0.7,
+    marginBottom: 8,
   },
 });
