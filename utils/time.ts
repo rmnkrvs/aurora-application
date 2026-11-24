@@ -22,3 +22,15 @@ export function isDark(sunrise: string, sunset: string, now: Date = new Date()):
     return now < new Date(sunrise) || now > new Date(sunset);
 }
 
+export function getNextSun(
+    daily: { sunrise: string[]; sunset: string[] },
+    now: Date = new Date()
+): { type: 'sunrise' | 'sunset'; time: string } {
+    if (now < new Date(daily.sunrise[0])) {
+        return { type: 'sunrise', time: daily.sunrise[0] };
+    } else if (now < new Date(daily.sunset[0])) {
+        return { type: 'sunset', time: daily.sunset[0] };
+    } else {
+        return { type: 'sunrise', time: daily.sunrise[1] };
+    }
+}

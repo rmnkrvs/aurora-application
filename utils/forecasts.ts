@@ -36,3 +36,18 @@ export function buildForecast(
 
     return slots;
 }
+
+export function summarizeDays(slots: ForecastSlot[]): ForecastSlot[] {
+    const best = new Map<string, ForecastSlot>();
+
+    for (const slot of slots) {
+        const key = slot.time.toLocaleDateString('sv-SE');
+        const current = best.get(key);
+
+        if (!current || slot.score > current.score) {
+            best.set(key, slot);
+        }
+    }
+
+    return Array.from(best.values());
+}

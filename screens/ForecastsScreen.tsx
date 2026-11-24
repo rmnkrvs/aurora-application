@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
-import { getCurrentHourIndex, isDark, formatLocalTime } from '../utils/time';
+import { getCurrentHourIndex, isDark, formatLocalTime, getNextSun } from '../utils/time';
 import { useLocation } from '../hooks/location';
 import { calculateScore } from '../utils/score';
 import { buildForecast } from '../utils/forecasts';
@@ -13,6 +13,8 @@ import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
 import ScoreInfoDialog from '../components/ScoreInfoDialog';
 import HourlyForecast from '../components/HourlyForecastCards';
+import DailyForecast from '../components/DailyForecasts';
+import { summarizeDays } from '../utils/forecasts';
 
 const IMAGE_HEIGHT = 350;
 const OVERLAP = 120;
@@ -61,6 +63,8 @@ export default function ForecastsScreen() {
     ? buildForecast(upcoming, weather, location.latitude)
     : [];
 
+  const days = summarizeDays(forecast);
+
   useEffect(() => {
     getLatestKp()
       .then(setKp)
@@ -79,6 +83,8 @@ export default function ForecastsScreen() {
       .then(setWeather)
       .catch(error => console.error('Error fetching data:', error));
   }, [location]);
+
+  const sunEvent = weather ? getNextSun(weather.daily) : null;
 
 
   return (
@@ -128,19 +134,12 @@ export default function ForecastsScreen() {
 
           {score !== null && <Text>{getScoreMessage(score)}</Text>}
 
-          {kp && weather && moon ? (
+          {kp && weather && moon && sunEvent ? (
             <View style={styles.chips}>
-              <Chip icon="flash">Kp {kp.estimated_kp.toFixed(0)}</Chip>
-              <Chip icon="weather-cloudy">Clouds {weather.hourly.cloud_cover[hourIndex]}%</Chip>
+              <Chip icon='flash'>Kp {kp.estimated_kp.toFixed(0)}</Chip>
+              <Chip icon='weather-cloudy'>Clouds {weather.hourly.cloud_cover[hourIndex]}%</Chip>
               <Chip icon={moon.icon}>{moon.name}</Chip>
-            </View>
-          ) : (
-            <Text>Loading data...</Text>
-          )}
-
-          {weather ? (
-            <View>
-              <Text>Sunrise: {formatLocalTime(weather.daily.sunrise[0])} - Sunset: {formatLocalTime(weather.daily.sunset[0])}</Text>
+              <Chip icon={sunEvent.type === 'sunrise' ? 'weather-sunset-up' : 'weather-sunset-down'}>{sunEvent.type === 'sunrise' ? 'Sunrise' : 'Sunset'} {formatLocalTime(sunEvent.time)}</Chip>
             </View>
           ) : (
             <Text>Loading data...</Text>
@@ -148,6 +147,9 @@ export default function ForecastsScreen() {
 
           <Text variant='titleMedium'>Next hours</Text>
           <HourlyForecast slots={forecast.slice(0, 8)} />
+
+          <Text variant='titleMedium'>Next days</Text>
+          <DailyForecast days={days} />
 
         </View>
 
