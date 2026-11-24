@@ -6,7 +6,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { getSightings } from '../db/sightings';
 import { Sighting } from '../types';
-import { RATINGS } from '../utils/ratings';
 
 type MapMarker = {
   latitude: number;
@@ -44,14 +43,14 @@ function buildMap(markers: MapMarker[]): string {
     }).addTo(map);
 
     markers.forEach(m => {
-    const element = document.createElement('div');
-    element.textContent = m.text;
-    L.marker([m.latitude, m.longitude]).addTo(map).bindPopup(element);
+      const element = document.createElement('div');
+      element.textContent = m.text;
+      L.marker([m.latitude, m.longitude]).addTo(map).bindPopup(element);
     });
 
     const points = markers.map(m => [m.latitude, m.longitude]);
     if (points.length > 0) {
-    map.fitBounds(points, { padding: [40, 40], maxZoom: 12 });
+      map.fitBounds(points, { padding: [40, 40], maxZoom: 12 });
     }
 
   </script>

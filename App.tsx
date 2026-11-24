@@ -11,87 +11,25 @@ import { db, initializeDatabase } from './db/sightings';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import Storage from 'expo-sqlite/kv-store';
 
-import { MD3DarkTheme, PaperProvider, configureFonts } from 'react-native-paper';
-import { adaptNavigationTheme } from 'react-native-paper';
-import { DarkTheme as NavigationDarkTheme } from '@react-navigation/native';
+import { PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 
 import { useFonts, Outfit_400Regular, Outfit_600SemiBold } from '@expo-google-fonts/outfit';
+import { theme, navigationTheme } from './theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const baseFonts = configureFonts({
-  config: { fontFamily: 'Outfit_400Regular', fontWeight: 'normal' },
-});
-
-const fonts = {
-  ...baseFonts,
-  displayLarge: { ...baseFonts.displayLarge, fontFamily: 'Outfit_600SemiBold' },
-  displayMedium: { ...baseFonts.displayMedium, fontFamily: 'Outfit_600SemiBold' },
-  titleLarge: { ...baseFonts.titleLarge, fontFamily: 'Outfit_600SemiBold' },
-  titleMedium: { ...baseFonts.titleMedium, fontFamily: 'Outfit_600SemiBold' },
-};
-
-const theme = {
-  ...MD3DarkTheme,
-  fonts,
-  colors: {
-    ...MD3DarkTheme.colors,
-
-    primary: '#5CF29A',
-    onPrimary: '#032713',
-    primaryContainer: '#0F4F4A',
-    onPrimaryContainer: '#B8F7E6',
-
-    secondary: '#A78BFA',
-    onSecondary: '#1E1147',
-    secondaryContainer: '#17445A',
-    onSecondaryContainer: '#DCD6FF',
-
-    tertiary: '#F2C469',
-    onTertiary: '#3A2A00',
-
-    background: '#081425',
-    surface: '#0E1F36',
-    surfaceVariant: '#1A3350',
-    onSurfaceVariant: '#A8BCD4',
-    outline: '#4A6585',
-    outlineVariant: '#26405C',
-
-    elevation: {
-      level0: 'transparent',
-      level1: '#112640',
-      level2: '#152C48',
-      level3: '#193350',
-      level4: '#1C3756',
-      level5: '#203D5E',
-    },
-  },
-};
-
-const { DarkTheme } = adaptNavigationTheme({
-  reactNavigationDark: NavigationDarkTheme,
-  materialDark: theme,
-});
-
-const navigationTheme = {
-  ...DarkTheme,
-  fonts: {
-    regular: { fontFamily: 'Outfit_400Regular', fontWeight: '400' as const },
-    medium: { fontFamily: 'Outfit_400Regular', fontWeight: '500' as const },
-    bold: { fontFamily: 'Outfit_600SemiBold', fontWeight: '600' as const },
-    heavy: { fontFamily: 'Outfit_600SemiBold', fontWeight: '700' as const },
-  },
-};
 
 export default function App() {
 
   const [fontsLoaded] = useFonts({ Outfit_400Regular, Outfit_600SemiBold });
+  const [dbReady, setDbReady] = useState(false);
 
   useDrizzleStudio(db);
 
   useEffect(() => {
-    initializeDatabase().catch(error => console.error('Error initializing database:', error));
+    initializeDatabase()
+      .then(() => setDbReady(true))
+      .catch(error => console.error('Error initializing database:', error));
   }, []);
 
   const [initialRoute] = useState<'Welcome' | 'Tabs'>(() =>

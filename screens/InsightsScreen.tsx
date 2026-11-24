@@ -85,7 +85,7 @@ export default function InsightsScreen() {
                   style={{
                     width: 40,
                     height: Math.max(4, (count / maxCount) * BAR_AREA_HEIGHT),
-                    backgroundColor: rating.value === 0 ? theme.colors.outline : theme.colors.primary,
+                    backgroundColor: rating.value === 0 ? theme.colors.onSurfaceVariant : theme.colors.primary,
                     borderRadius: 6,
                   }}
                 />
@@ -134,13 +134,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-  },
-  statCard: {
-    flex: 1,
-  },
-  statContent: {
-    alignItems: 'center',
-    gap: 4,
   },
   bars: {
     flexDirection: 'row',

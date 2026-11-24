@@ -27,8 +27,13 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          await deleteSighting(id);
-          setSightings(await getSightings());
+          try {
+            await deleteSighting(id);
+            setSightings(current => current.filter(sighting => sighting.id !== id));
+          } catch (error) {
+            console.error('Error deleting sighting:', error);
+            Alert.alert('Could not delete the sighting. Please try again.');
+          }
         },
       },
     ]);
@@ -42,7 +47,10 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ padding: 16 }}
         ListEmptyComponent={
-          <Text>No saved sightings yet</Text>
+          <View style={styles.empty}>
+            <Text>No saved sightings yet</Text>
+            <Text variant='bodyMedium' style={styles.emptyHint}>Tap the + button to save your first aurora sighting.</Text>
+          </View>
         }
         renderItem={({ item }) => (
           <Card style={styles.card} onLongPress={() => confirmDelete(item.id)}>
@@ -57,7 +65,7 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
                 <Chip icon='weather-night'>Kp {item.kpIndex.toFixed(1)}</Chip>
                 <Chip icon='cloud-outline'>{Math.round(item.cloudCover)} %</Chip>
                 {item.score !== null && (
-                <Chip icon='chart-line'>{Math.round(item.score)} %</Chip>
+                  <Chip icon='chart-line'>{Math.round(item.score)} %</Chip>
                 )}
               </View>
             </Card.Content>
@@ -79,7 +87,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  fab: { position: 'absolute', right: 16, bottom: 16 },
-  chips: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
-  card: { marginBottom: 12 },
+  fab: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16
+  },
+  chips: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap'
+  },
+  card: {
+    marginBottom: 12
+  },
+  empty: {
+    alignItems: 'center',
+    marginTop: 64,
+    gap: 8
+  },
+  emptyHint: {
+    opacity: 0.7,
+    textAlign: 'center'
+  },
 });

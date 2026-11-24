@@ -1,20 +1,20 @@
 import { ScrollView, View, StyleSheet } from 'react-native';
 import { Chip, Text, useTheme, IconButton } from 'react-native-paper';
 import { Image } from 'expo-image';
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { getKpForecast, getLatestKp } from '../api/noaa';
 import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import { getCurrentHourIndex, isDark, formatLocalTime, getNextSun } from '../utils/time';
 import { useLocation } from '../hooks/location';
-import { buildForecast } from '../utils/forecasts';
+import { buildForecast, summarizeDays } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
 import ScoreInfoDialog from '../components/ScoreInfoDialog';
 import HourlyForecast from '../components/HourlyForecast';
 import DailyForecast from '../components/DailyForecast';
-import { summarizeDays } from '../utils/forecasts';
 import { calculateScore, getScoreLevel } from '../utils/score';
+import { useFocusEffect } from '@react-navigation/native';
 
 const IMAGE_HEIGHT = 450;
 const OVERLAP = 200;
@@ -26,8 +26,9 @@ export default function ForecastsScreen() {
   const [kp, setKp] = useState<KpData | null>(null);
   const [kpForecast, setKpForecast] = useState<KpForecast[] | null>(null);
   const [weather, setWeather] = useState<Weather | null>(null);
-
   const [visible, setVisible] = useState(false);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
@@ -65,24 +66,21 @@ export default function ForecastsScreen() {
 
   const days = summarizeDays(forecast);
 
-  useEffect(() => {
-    getLatestKp()
-      .then(setKp)
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setError(false);
+      const fail = (e: unknown) => {
+        console.error('Error fetching data:', e);
+        setError(true);
+      };
 
-  useEffect(() => {
-    getKpForecast()
-      .then(setKpForecast)
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
-  useEffect(() => {
-    if (!location) return;
-    getWeather(location.latitude, location.longitude)
-      .then(setWeather)
-      .catch(error => console.error('Error fetching data:', error));
-  }, [location]);
+      getLatestKp().then(setKp).catch(fail);
+      getKpForecast().then(setKpForecast).catch(fail);
+      if (location) {
+        getWeather(location.latitude, location.longitude).then(setWeather).catch(fail);
+      }
+    }, [location, reloadKey])
+  );
 
   const sunEvent = weather ? getNextSun(weather.daily) : null;
 
@@ -112,29 +110,35 @@ export default function ForecastsScreen() {
 
           <View style={styles.header}>
 
-          {city ? (
-            <Text variant='titleMedium'>{city}</Text>
-          ) :
-            <Text variant='bodyLarge'>Current location: Loading...</Text>}
+            {city ? (
+              <Text variant='titleMedium'>{city}</Text>
+            ) :
+              <Text variant='bodyLarge'>Current location: Loading...</Text>}
 
-          <View style={styles.row}>
-            <Text variant='labelLarge'>Estimated chance to see Aurora</Text>
-            <IconButton
-              icon='information-outline'
-              size={18}
-              onPress={showDialog}
-              style={styles.info}
-              accessibilityLabel='How is this calculated?'
-            />
+            <View style={styles.row}>
+              <Text variant='labelLarge'>Estimated chance to see Aurora</Text>
+              <IconButton
+                icon='information-outline'
+                size={18}
+                onPress={showDialog}
+                style={styles.info}
+                accessibilityLabel='How is this calculated?'
+              />
+            </View>
+
+            {score !== null ?
+              <Text variant='displayLarge' style={{ fontFamily: 'Outfit_600SemiBold', color: getScoreLevel(score, theme).color }}>{score}%</Text>
+              :
+              <Text>Calculating...</Text>}
+
+            {score !== null && <Text variant='titleMedium'>{getScoreMessage(score)}</Text>}
           </View>
 
-          {score !== null ?
-            <Text variant='displayLarge' style={{ fontFamily: 'Outfit_600SemiBold', color: getScoreLevel(score, theme).color }}>{score}%</Text>
-            :
-            <Text>Calculating...</Text>}
-
-          {score !== null && <Text variant='titleMedium'>{getScoreMessage(score)}</Text>}
-          </View>
+          {error && (
+            <View>
+              <Text variant='bodyMedium'>Could't load the forecast. Check your internet connection.</Text>
+            </View>
+          )}
 
           {kp && weather && moon && sunEvent ? (
             <View style={styles.chips}>
@@ -207,9 +211,6 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   header: {
-  gap: 4,
-},
-muted: {
-  opacity: 0.7,
-},
+    gap: 4,
+  },
 });

@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 24,
-    paddingBottom: 24,
     paddingTop: 250,
     gap: 12,
   },
@@ -59,14 +58,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-  borderRadius: 28,
-},
-buttonContent: {
-  paddingVertical: 8,
-},
-buttonLabel: {
-  fontSize: 18,
-  lineHeight: 24,
-  fontFamily: 'Outfit_600SemiBold',
-},
+    borderRadius: 28,
+  },
+  buttonContent: {
+    paddingVertical: 8,
+  },
+  buttonLabel: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontFamily: 'Outfit_600SemiBold',
+  },
 });
