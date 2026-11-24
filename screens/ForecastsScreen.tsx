@@ -128,11 +128,11 @@ export default function ForecastsScreen() {
           </View>
 
           {score !== null ?
-            <Text variant='displayLarge'>{score}%</Text>
+            <Text variant='displayLarge' style={{ fontFamily: 'Outfit_600SemiBold' }}>{score}%</Text>
             :
             <Text>Calculating...</Text>}
 
-          {score !== null && <Text>{getScoreMessage(score)}</Text>}
+          {score !== null && <Text variant='bodyLarge'>{getScoreMessage(score)}</Text>}
 
           {kp && weather && moon && sunEvent ? (
             <View style={styles.chips}>
