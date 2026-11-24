@@ -41,7 +41,7 @@ export function getScoreLevel(score: number, theme: MD3Theme): ScoreLevel {
         return { label: 'Good', color: theme.colors.primary };
     }
     if (score >= 30) {
-        return { label: 'Fair', color: '#E6C65C' };
+        return { label: 'Fair', color: theme.colors.tertiary };
     }
-    return { label: 'Low', color: theme.colors.outline }; 
+    return { label: 'Low', color: theme.colors.onSurfaceVariant }; 
 }

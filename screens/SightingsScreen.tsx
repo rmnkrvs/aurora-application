@@ -54,8 +54,11 @@ export default function SightingsScreen({ navigation }: TabScreenProps<'Sighting
             <Card.Content style={{ gap: 8 }}>
               {item.note ? <Text variant="bodyMedium">{item.note}</Text> : null}
               <View style={styles.chips}>
-                <Chip icon="weather-night">Kp {item.kpIndex.toFixed(1)}</Chip>
-                <Chip icon="cloud-outline">{Math.round(item.cloudCover)} %</Chip>
+                <Chip icon='weather-night'>Kp {item.kpIndex.toFixed(1)}</Chip>
+                <Chip icon='cloud-outline'>{Math.round(item.cloudCover)} %</Chip>
+                {item.score !== null && (
+                <Chip icon='chart-line'>{Math.round(item.score)} %</Chip>
+                )}
               </View>
             </Card.Content>
           </Card>

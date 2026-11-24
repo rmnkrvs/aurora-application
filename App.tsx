@@ -37,11 +37,35 @@ const theme = {
   fonts,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: '#5EEAB0',
-    onPrimary: '#06241A',
+
+    primary: '#5CF29A',
+    onPrimary: '#032713',
+    primaryContainer: '#0F4F4A',
+    onPrimaryContainer: '#B8F7E6',
+
     secondary: '#A78BFA',
-    background: '#0B1220',
-    surface: '#152036',
+    onSecondary: '#1E1147',
+    secondaryContainer: '#17445A',
+    onSecondaryContainer: '#DCD6FF',
+
+    tertiary: '#F2C469',
+    onTertiary: '#3A2A00',
+
+    background: '#081425',
+    surface: '#0E1F36',
+    surfaceVariant: '#1A3350',
+    onSurfaceVariant: '#A8BCD4',
+    outline: '#4A6585',
+    outlineVariant: '#26405C',
+
+    elevation: {
+      level0: 'transparent',
+      level1: '#112640',
+      level2: '#152C48',
+      level3: '#193350',
+      level4: '#1C3756',
+      level5: '#203D5E',
+    },
   },
 };
 

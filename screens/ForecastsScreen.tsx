@@ -7,7 +7,6 @@ import { getWeather } from '../api/openmeteo'
 import { KpData, KpForecast, Weather } from '../types';
 import { getCurrentHourIndex, isDark, formatLocalTime, getNextSun } from '../utils/time';
 import { useLocation } from '../hooks/location';
-import { calculateScore } from '../utils/score';
 import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
@@ -15,9 +14,10 @@ import ScoreInfoDialog from '../components/ScoreInfoDialog';
 import HourlyForecast from '../components/HourlyForecastCards';
 import DailyForecast from '../components/DailyForecasts';
 import { summarizeDays } from '../utils/forecasts';
+import { calculateScore, getScoreLevel } from '../utils/score';
 
-const IMAGE_HEIGHT = 350;
-const OVERLAP = 120;
+const IMAGE_HEIGHT = 450;
+const OVERLAP = 200;
 
 export default function ForecastsScreen() {
 
@@ -86,12 +86,11 @@ export default function ForecastsScreen() {
 
   const sunEvent = weather ? getNextSun(weather.daily) : null;
 
-
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 
       <Image
-        source={require('../assets/revontuli-vaaka.jpg')}
+        source={require('../assets/aurora-2000x1331.jpeg')}
         style={styles.hero}
         contentFit="cover"
       />
@@ -111,13 +110,15 @@ export default function ForecastsScreen() {
         ]}
         >
 
+          <View style={styles.header}>
+
           {city ? (
-            <Text variant='bodyLarge'>{city}</Text>
+            <Text variant='titleMedium'>{city}</Text>
           ) :
             <Text variant='bodyLarge'>Current location: Loading...</Text>}
 
           <View style={styles.row}>
-            <Text variant='bodyLarge'>Estimated chance to see Aurora</Text>
+            <Text variant='labelLarge'>Estimated chance to see Aurora</Text>
             <IconButton
               icon='information-outline'
               size={18}
@@ -128,16 +129,17 @@ export default function ForecastsScreen() {
           </View>
 
           {score !== null ?
-            <Text variant='displayLarge' style={{ fontFamily: 'Outfit_600SemiBold' }}>{score}%</Text>
+            <Text variant='displayLarge' style={{ fontFamily: 'Outfit_600SemiBold', color: getScoreLevel(score, theme).color }}>{score}%</Text>
             :
             <Text>Calculating...</Text>}
 
-          {score !== null && <Text variant='bodyLarge'>{getScoreMessage(score)}</Text>}
+          {score !== null && <Text variant='titleMedium'>{getScoreMessage(score)}</Text>}
+          </View>
 
           {kp && weather && moon && sunEvent ? (
             <View style={styles.chips}>
               <Chip icon='flash'>Kp {kp.estimated_kp.toFixed(0)}</Chip>
-              <Chip icon='weather-cloudy'>Clouds {weather.hourly.cloud_cover[hourIndex]}%</Chip>
+              <Chip icon='weather-cloudy'>Clouds {weather.hourly.cloud_cover[hourIndex]} %</Chip>
               <Chip icon={moon.icon}>{moon.name}</Chip>
               <Chip icon={sunEvent.type === 'sunrise' ? 'weather-sunset-up' : 'weather-sunset-down'}>{sunEvent.type === 'sunrise' ? 'Sunrise' : 'Sunset'} {formatLocalTime(sunEvent.time)}</Chip>
             </View>
@@ -203,5 +205,11 @@ const styles = StyleSheet.create({
   },
   info: {
     margin: 0,
-  }
+  },
+  header: {
+  gap: 4,
+},
+muted: {
+  opacity: 0.7,
+},
 });

@@ -112,8 +112,6 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
 
             <Card>
 
-                <Card.Title title='Add sighting' />
-
                 <Card.Content style={{ gap: 16 }}>
                     <Text variant='headlineMedium'>Add sighting</Text>
 

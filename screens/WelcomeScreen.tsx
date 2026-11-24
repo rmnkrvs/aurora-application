@@ -19,22 +19,24 @@ export default function WelcomeScreen({ navigation }: RootStackScreenProps<'Welc
     <View style={styles.container}>
 
       <Image
-        source={require('../assets/revontuli-etusivu.jpg')}
+        source={require('../assets/aurora-2000x1331.jpeg')}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%' }}
         contentFit='cover'
       />
 
       <View style={styles.content}>
-        <Text variant='displayMedium' style={styles.centered}>Aurora</Text>
-        <Text variant='bodyLarge' style={styles.centered}>
+        <Text variant='displayLarge' style={styles.centered}>aurora</Text>
+        <Text variant='titleLarge' style={styles.centered}>
           Aurora forecasts for where you are, and a diary for the nights you saw them.
         </Text>
-        <Text variant='bodySmall' style={styles.centered}>Your location is used for local forecasts.</Text>
+        <Text variant='bodyMedium' style={styles.centered}>Your location is used for local forecasts.</Text>
       </View>
       <Button
         mode='contained'
         onPress={handleStart}
-        contentStyle={styles.button}
+        style={styles.button}
+        contentStyle={styles.buttonContent}
+        labelStyle={styles.buttonLabel}
       >
         Get started!
       </Button>
@@ -46,17 +48,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   content: {
     padding: 24,
-    paddingBottom: 48,
-    paddingTop: 180,
+    paddingBottom: 24,
+    paddingTop: 250,
     gap: 12,
   },
   centered: {
     textAlign: 'center',
   },
   button: {
-  },
+  borderRadius: 28,
+},
+buttonContent: {
+  paddingVertical: 8,
+},
+buttonLabel: {
+  fontSize: 18,
+  lineHeight: 24,
+  fontFamily: 'Outfit_600SemiBold',
+},
 });
