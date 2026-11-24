@@ -5,8 +5,8 @@ Northern lights forecast and diary for your phone.
 ## Screenshots
 
 | <img src="./assets/welcomescreen.jpeg" width="200"> | <img src="./assets/forecastsscreen.jpeg" width="200">
-| <img src="./assets/sightingsscreen.jpeg" width="200"> | <img src="./assets/addsightingsscreen.jpeg" width="200">
-| <img src="./assets/placesscreen.jpeg" width="200"> | <img src="./assets/insigthsscreen.jpeg" width="200">
+| <img src="./assets/sightingsscreen.jpeg" width="200"> | <img src="./assets/addnewsighting.jpeg" width="200">
+| <img src="./assets/placesscreen.jpeg" width="200"> | <img src="./assets/insightsscreen.jpeg" width="200">
 
 ## Features
 
