@@ -1,10 +1,9 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, Image, StyleSheet } from 'react-native';
 import { Button, Card, TextInput, Text, SegmentedButtons } from 'react-native-paper';
 import { useState, useEffect } from 'react';
 import { saveSighting } from '../db/sightings';
 import { RootStackScreenProps, Weather, KpData } from '../types';
 import * as ImagePicker from 'expo-image-picker';
-import { Image } from 'react-native';
 import { File, Paths } from 'expo-file-system';
 import { RATINGS } from '../utils/ratings';
 import { useLocation } from '../hooks/location';
@@ -94,7 +93,7 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
                 latitude: location.latitude,
                 longitude: location.longitude,
                 rating,
-                note,
+                note: note.trim() || undefined,
                 photoUri,
                 kpIndex: kp.estimated_kp,
                 cloudCover: weather.hourly.cloud_cover[hourIndex],
@@ -108,46 +107,28 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
     };
 
     return (
-        <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <ScrollView contentContainerStyle={styles.container}>
 
             <Card>
 
-                <Card.Content style={{ gap: 16 }}>
+                <Card.Content style={styles.cardContent}>
                     <Text variant='headlineMedium'>Add sighting</Text>
 
                     <SegmentedButtons
                         value={String(rating)}
                         onValueChange={value => setRating(Number(value))}
-                        buttons={[
-                            {
-                                value: '0',
-                                label: 'None',
-                            },
-                            {
-                                value: '1',
-                                label: 'Weak',
-                            },
-                            {
-                                value: '2',
-                                label: 'Clear'
-                            },
-                            {
-                                value: '3',
-                                label: 'Strong',
-                            }
-                        ]}
+                        buttons={RATINGS.map(r => ({ value: String(r.value), label: r.label }))}
                     />
 
                     <TextInput
                         mode='outlined'
-                        style={{ marginBottom: 10 }}
                         label='Note'
                         onChangeText={text => setNote(text)}
                         value={note}
                         multiline
                     />
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={styles.buttons}>
                         <Button
                             mode='outlined'
                             onPress={takePhoto}
@@ -161,7 +142,7 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
                             Choose from gallery
                         </Button>
                     </View>
-                    {photoUri && <Image source={{ uri: photoUri }} style={{ width: '100%', height: 200 }} />}
+                    {photoUri && <Image source={{ uri: photoUri }} style={styles.image} />}
 
                     <Button
                         mode='contained'
@@ -171,8 +152,29 @@ export default function AddSightingScreen({ navigation }: RootStackScreenProps<'
                         Save
                     </Button>
 
+                    {(!location || !kp || !weather) && (
+                        <Text variant='bodySmall'>Loading conditions...</Text>
+                    )}
+
                 </Card.Content>
             </Card>
         </ScrollView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 16
+    },
+    cardContent: {
+        gap: 16
+    },
+    buttons: {
+        flexDirection: 'row', 
+        justifyContent: 'space-between'
+    },
+    image: {
+        width: '100%',
+        height: 200,
+    },
+});
