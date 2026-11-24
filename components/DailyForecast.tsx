@@ -2,6 +2,7 @@ import { View, StyleSheet } from 'react-native';
 import { ProgressBar, Text, useTheme, Divider } from 'react-native-paper';
 import { ForecastSlot } from '../types';
 import { getScoreLevel } from '../utils/score';
+import { formatTime, toDateKey } from '../utils/time';
 
 type Props = {
     days: ForecastSlot[];
@@ -9,13 +10,13 @@ type Props = {
 
 export default function DailyForecast({ days }: Props) {
     const theme = useTheme();
-    const todayKey = new Date().toLocaleDateString('sv-SE');
+    const todayKey = toDateKey(new Date());
 
     return (
-        <View style={styles.list}>
+        <View>
             {days.map((slot, index) => {
                 const level = getScoreLevel(slot.score, theme);
-                const isToday = slot.time.toLocaleDateString('sv-SE') === todayKey;
+                const isToday = toDateKey(slot.time) === todayKey;
 
                 return (
                     <View key={slot.time.toISOString()}>
@@ -25,11 +26,11 @@ export default function DailyForecast({ days }: Props) {
                                     {isToday ? 'Today' : slot.time.toLocaleDateString('en-GB', { weekday: 'long' })}
                                 </Text>
                                 <Text variant='labelSmall'>
-                                    Best at {slot.time.toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' })}
+                                    {slot.score > 0 ? `Best at ${formatTime(slot.time)}` : 'No chance'}
                                 </Text>
                             </View>
 
-                            <View style={styles.barwrapper}>
+                            <View style={styles.barWrapper}>
                                 <ProgressBar progress={slot.score / 100} color={level.color} style={styles.bar} />
                             </View>
 
@@ -48,7 +49,6 @@ export default function DailyForecast({ days }: Props) {
 }
 
 const styles = StyleSheet.create({
-    list: {},
     divider: {
         marginVertical: 12,
     },
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         height: 8,
         borderRadius: 4,
     },
-    barwrapper: {
+    barWrapper: {
         flex: 1,
     },
     score: {

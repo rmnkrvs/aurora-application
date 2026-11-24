@@ -39,7 +39,7 @@ function FactorRow({ label, value, progress, isBlocker }: {
 
 export default function ScoreInfoDialog({ visible, onDismiss, details, kp, cloudCover, isDark, moonName }: Props) {
 
-    const blocker = Object.entries(details.factors).sort((a, b) => a[1] - b[1])[0];
+    const blocker = Object.entries(details.factors).sort((a, b) => a[1] - b[1])[0]; // factor with lowest value limits the visibility most
     const blockerName = blocker[1] < 1 ? blocker[0] : null;
 
     return (
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between', // label on the left, value on the right
+        justifyContent: 'space-between', // label on the left value on the right
     },
     bar: {
         height: 8,

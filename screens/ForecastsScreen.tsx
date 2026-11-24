@@ -11,8 +11,8 @@ import { buildForecast } from '../utils/forecasts';
 import { getScoreMessage } from '../strings';
 import { getMoonPhase } from '../utils/moon';
 import ScoreInfoDialog from '../components/ScoreInfoDialog';
-import HourlyForecast from '../components/HourlyForecastCards';
-import DailyForecast from '../components/DailyForecasts';
+import HourlyForecast from '../components/HourlyForecast';
+import DailyForecast from '../components/DailyForecast';
 import { summarizeDays } from '../utils/forecasts';
 import { calculateScore, getScoreLevel } from '../utils/score';
 

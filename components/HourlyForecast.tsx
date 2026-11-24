@@ -2,6 +2,7 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { Icon, Text, useTheme } from 'react-native-paper';
 import { ForecastSlot } from '../types';
 import { getScoreLevel } from '../utils/score';
+import { formatTime } from '../utils/time';
 
 type Props = {
     slots: ForecastSlot[];
@@ -33,7 +34,7 @@ export default function HourlyForecast({ slots }: Props) {
                         ]}
                     >
                         <Text variant='labelMedium'>
-                            {slot.time.toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' })}
+                            {formatTime(slot.time)}
                         </Text>
 
                         {slot.isDark ? (

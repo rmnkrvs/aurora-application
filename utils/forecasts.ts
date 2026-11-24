@@ -1,6 +1,6 @@
 import { KpForecast, Weather, ForecastSlot } from '../types';
 import { calculateScore } from './score';
-import { getCurrentHourIndex, isDark } from './time';
+import { getCurrentHourIndex, isDark, toDateKey } from './time';
 
 export function buildForecast(
     kpForecast: KpForecast[],
@@ -15,7 +15,7 @@ export function buildForecast(
 
         const hourIndex = getCurrentHourIndex(weather.hourly.time, time);
 
-        const dayIndex = weather.daily.time.indexOf(time.toLocaleDateString('sv-SE'));
+        const dayIndex = weather.daily.time.indexOf(toDateKey(time));
 
         if (dayIndex === -1) continue; // slot is outside Open Meteos forecast range
 
@@ -41,7 +41,7 @@ export function summarizeDays(slots: ForecastSlot[]): ForecastSlot[] {
     const best = new Map<string, ForecastSlot>();
 
     for (const slot of slots) {
-        const key = slot.time.toLocaleDateString('sv-SE');
+        const key = toDateKey(slot.time);
         const current = best.get(key);
 
         if (!current || slot.score > current.score) {

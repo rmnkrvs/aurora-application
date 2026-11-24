@@ -7,11 +7,8 @@ export function getCurrentHourIndex(times: string[], at: Date = new Date()): num
     return hourIndex;
 }
 
-export function formatForecastTime(timeTag: string) {
-    return new Date(timeTag + 'Z').toLocaleTimeString('fi-FI', {
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+export function formatTime(date: Date): string {
+    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
 export function formatLocalTime(time: string): string {
